@@ -1,0 +1,4 @@
+# Una URL por linea. Las lineas que empiezan por # se ignoran.
+# Sustituye estas por la lista real cuando llegue la peticion n3 del buzon.
+https://ejemplo-uno.es
+https://ejemplo-dos.es

@@ -1,0 +1,24 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Tienda de Prueba</title>
+<script src="https://static.klaviyo.com/onsite/js/klaviyo.js"></script>
+<script>var _learnq = _learnq || [];</script>
+<link rel="stylesheet" href="/cdn/shop/theme.css">
+<style>body{font-family:system-ui;max-width:900px;margin:40px auto;padding:0 20px}
+#cookies{position:fixed;bottom:0;left:0;right:0;background:#222;color:#fff;padding:16px}
+#popup{display:none;position:fixed;top:25%;left:50%;transform:translateX(-50%);background:#fff;border:2px solid #333;padding:28px;z-index:99}
+.product-card{display:block;border:1px solid #ddd;padding:14px;margin:10px 0;text-decoration:none;color:#111}</style></head>
+<body>
+<div id="cookies"><button id="onetrust-accept-btn-handler">Aceptar todo</button></div>
+<div id="popup" class="modal"><h3>10% de descuento</h3>
+  <form class="newsletter-form"><input type="email" name="email" placeholder="Tu correo">
+  <button type="submit">Quiero mi descuento</button></form>
+  <button class="close-button" aria-label="Cerrar">x</button></div>
+<h1>Tienda de Prueba</h1>
+<a class="product-card" href="/products/camiseta.html">Camiseta de algodón — 29,90 €</a>
+<a class="product-card" href="/products/gorra.html">Gorra — 19,90 €</a>
+<footer><h4>Newsletter</h4><form class="newsletter-footer">
+<input type="email" name="email" placeholder="Tu correo"><button type="submit">Suscribirme</button></form></footer>
+<script>setTimeout(function(){document.getElementById('popup').style.display='block'},1500);
+document.querySelectorAll('form').forEach(function(f){f.addEventListener('submit',function(e){
+e.preventDefault();document.cookie='suscrito=1;path=/';f.innerHTML='<p class="ok">Gracias por suscribirte</p>';});});
+document.querySelector('.close-button').onclick=function(){document.getElementById('popup').style.display='none'};</script>
+</body></html>

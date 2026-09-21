@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+datos/*.db
+datos/clasificadas.csv
+informes/*.pdf
+informes/capturas/
+.env
