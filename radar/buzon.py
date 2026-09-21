@@ -78,7 +78,7 @@ def recoger(
     servidor: str | None = None,
     usuario: str | None = None,
     clave: str | None = None,
-    carpeta: str = "INBOX",
+    carpeta: str | None = None,
 ) -> list[CorreoRecibido]:
     """Devuelve todos los correos recibidos en ese alias desde el abandono.
 
@@ -86,6 +86,10 @@ def recoger(
       RADAR_IMAP_SERVIDOR, RADAR_IMAP_USUARIO, RADAR_IMAP_CLAVE
     Nunca las escribas en el codigo ni las subas al repositorio.
     """
+    # La carpeta importa: info@ es la direccion real del negocio, asi que los
+    # correos del robot deben caer en una carpeta aparte y no en la bandeja de
+    # entrada, donde taparian el correo de clientes de verdad.
+    carpeta = carpeta or os.environ.get("RADAR_IMAP_CARPETA", "Auditorias")
     servidor = servidor or os.environ.get("RADAR_IMAP_SERVIDOR", "")
     usuario = usuario or os.environ.get("RADAR_IMAP_USUARIO", "")
     clave = clave or os.environ.get("RADAR_IMAP_CLAVE", "")

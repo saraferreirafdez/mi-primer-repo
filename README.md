@@ -67,20 +67,42 @@ python3 cli.py informar --url https://tienda.es --visitas 30000 --ticket 60
 python3 cli.py demo
 ```
 
-### Variables de entorno
+### El buzón: `info@sorasystems.es`
 
-Nunca escribas credenciales en el código ni las subas al repositorio.
+Copia `.env.ejemplo` a `.env` y rellénalo. El fichero `.env` está en
+`.gitignore`, así que nunca se sube al repositorio.
 
 ```bash
-export RADAR_ALIAS_BASE="auditoria@sorasystems.es"   # buzón con catch-all
-export RADAR_IMAP_SERVIDOR="imap.tudominio.com"
-export RADAR_IMAP_USUARIO="auditoria@sorasystems.es"
-export RADAR_IMAP_CLAVE="..."
+RADAR_ALIAS_BASE="info@sorasystems.es"
+RADAR_IMAP_SERVIDOR="imap.tuproveedor.com"
+RADAR_IMAP_USUARIO="info@sorasystems.es"
+RADAR_IMAP_CLAVE="..."
+RADAR_IMAP_CARPETA="Auditorias"
 ```
 
-El buzón necesita admitir **subetiquetas** (`auditoria+loquesea@…`) o
-catch-all. Cada tienda recibe un alias distinto, y ese alias es lo que
-permite saber después qué tienda ha mandado cada correo.
+Cuando esté puesto, comprueba que funciona antes de usarlo:
+
+```bash
+python3 comprobar_buzon.py
+```
+
+El script verifica las credenciales, la conexión y la carpeta, y termina
+diciéndote a qué dirección exacta mandarte un correo de prueba.
+
+**Lo que tiene que cumplir el buzón — tres cosas:**
+
+1. **Admitir subetiquetas.** El robot escribe a `info+tienda1234@sorasystems.es`
+   y eso tiene que llegar a `info@sorasystems.es`. Casi todos los proveedores
+   lo hacen. Si el tuyo no, hay que activar *catch-all* en el dominio.
+2. **Tener acceso IMAP activado.** Algunos proveedores lo traen apagado.
+3. **Una carpeta llamada `Auditorias`** con una regla que mande ahí todo lo
+   dirigido a `info+*@sorasystems.es`.
+
+**Por qué la carpeta no es opcional:** `info@` es la dirección real del
+negocio. Cada auditoría suscribe el robot a una newsletter, así que 270
+auditorías son 270 suscripciones. Sin la regla, eso entierra el correo de
+clientes de verdad en una semana. Con la regla, todo cae aparte y la bandeja
+de entrada sigue limpia.
 
 ---
 

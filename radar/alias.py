@@ -13,7 +13,7 @@ import re
 
 def alias_para(url: str, base: str | None = None) -> str:
     """Devuelve algo como auditoria+tiendaejemplo7f3a@sorasystems.es."""
-    base = base or os.environ.get("RADAR_ALIAS_BASE", "auditoria@sorasystems.es")
+    base = base or os.environ.get("RADAR_ALIAS_BASE", "info@sorasystems.es")
     usuario, _, dominio = base.partition("@")
     limpio = re.sub(r"^https?://(www\.)?", "", url.lower())
     limpio = re.sub(r"[^a-z0-9]", "", limpio.split("/")[0])[:16]
