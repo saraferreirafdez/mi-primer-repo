@@ -148,3 +148,23 @@ cd ../.. && python3 cli.py sondear --url http://localhost:8777/
 
 La tienda falsa lleva huellas de Shopify y Klaviyo, banner de cookies,
 popup de suscripción, carrito y checkout, así que ejercita el flujo entero.
+
+---
+
+## La calculadora pública (`web/calculadora.html`)
+
+Página autónoma, sin dependencias externas, lista para desplegar en
+sorasystems.es desde Netlify. Es la pieza que convierte el embudo en
+entrante: el visitante mete tres cifras, ve lo que pierde al instante y de
+ahí pasa a pedir la auditoría gratis que ejecuta este mismo robot.
+
+**Usa los mismos supuestos que `radar/rubrica.py`** (70 % de abandono, 8 %
+de recuperación), pero es **deliberadamente conservadora**: su suelo de
+recuperación es 0,02 frente al 0,01 de la rúbrica. Así la auditoría real
+casi siempre revela una cifra mayor que la que vio el cliente en la web.
+Al revés — prometer más de lo que luego aparece — se paga en la primera
+reunión.
+
+Si cambias un supuesto en `rubrica.py`, cámbialo también en el `<script>`
+de la calculadora. Una cifra distinta en la web y en el informe resta
+credibilidad justo en el momento de la venta.

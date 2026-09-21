@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Cuánto pierdes por no recuperar carritos? · Sora Systems</title>
+<meta name="description" content="Calcula en diez segundos cuánto dinero se deja tu tienda online cada mes por no recuperar los carritos abandonados.">
+<style>
+  :root{
+    --coral:#FF6B4A; --turquesa:#2EC4B6; --amarillo:#FFD23F;
+    --tinta:#1A2634; --gris:#6B7A88; --fondo:#FFFDF9;
+    --crema:#FFF4EE; --hueso:#F4F1EC; --borde:#EFE9E4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--fondo); color:var(--tinta);
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  .franja{height:6px;background:var(--coral)}
+  .envoltura{max-width:760px;margin:0 auto;padding:0 16px}
+
+  header{padding:28px 0 8px}
+  .marca{font-weight:800;letter-spacing:.06em;font-size:15px}
+
+  .hero{padding:24px 0 30px}
+  .hero h1{font-size:clamp(28px,6.5vw,42px);line-height:1.12;letter-spacing:-.02em}
+  .hero p{margin-top:14px;font-size:clamp(15px,3.4vw,18px);color:var(--gris);max-width:52ch}
+
+  .tarjeta{
+    background:#fff;border:1px solid var(--borde);border-radius:16px;
+    padding:clamp(18px,4vw,28px);margin-bottom:20px;
+  }
+
+  .campo{margin-bottom:24px}
+  .campo:last-child{margin-bottom:0}
+  .campo label{display:block;font-weight:700;font-size:15px;margin-bottom:2px}
+  .ayuda{font-size:13px;color:var(--gris);margin-bottom:12px}
+  .fila{display:flex;align-items:center;gap:14px}
+  input[type=range]{
+    flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;
+    background:var(--borde);outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;
+    background:var(--coral);cursor:pointer;border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(0,0,0,.22);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:26px;height:26px;border-radius:50%;background:var(--coral);
+    cursor:pointer;border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.22);
+  }
+  .valor{
+    min-width:104px;text-align:right;font-weight:800;font-size:17px;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .interruptor{display:flex;gap:10px;margin-top:10px}
+  .interruptor button{
+    flex:1;padding:13px 10px;border:2px solid var(--borde);background:#fff;
+    border-radius:11px;font-size:14.5px;font-weight:700;cursor:pointer;
+    color:var(--gris);font-family:inherit;transition:.15s;
+  }
+  .interruptor button[aria-pressed=true]{
+    border-color:var(--coral);background:var(--crema);color:var(--tinta);
+  }
+
+  .resultado{
+    background:var(--crema);border-radius:16px;padding:clamp(22px,5vw,32px);
+    border-left:6px solid var(--coral);margin-bottom:20px;
+  }
+  .resultado .rotulo{font-size:14px;color:var(--gris);font-weight:600}
+  .cifra{
+    font-size:clamp(40px,11vw,62px);font-weight:800;color:var(--coral);
+    line-height:1.05;margin:8px 0 4px;letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums;
+  }
+  .anual{font-size:clamp(15px,3.6vw,17px);font-weight:600}
+
+  .desglose{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;margin-top:22px;
+  }
+  .dato{background:#fff;border-radius:11px;padding:14px 16px}
+  .dato .n{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums}
+  .dato .t{font-size:12.5px;color:var(--gris);margin-top:2px;line-height:1.35}
+
+  .supuestos{
+    background:var(--hueso);border-radius:12px;padding:16px 18px;
+    font-size:13px;color:var(--gris);margin-bottom:22px;
+  }
+  .supuestos strong{display:block;color:var(--tinta);font-size:12px;
+    letter-spacing:.05em;margin-bottom:6px}
+
+  .cierre{
+    background:var(--tinta);color:#fff;border-radius:16px;
+    padding:clamp(22px,5vw,32px);margin-bottom:22px;
+  }
+  .cierre h2{color:var(--amarillo);font-size:clamp(20px,4.6vw,25px);line-height:1.2}
+  .cierre p{margin-top:12px;font-size:15.5px;color:#E4E9ED}
+  .bf{
+    margin-top:16px;padding-top:15px;border-top:1px solid rgba(255,255,255,.18);
+    color:var(--amarillo);font-weight:700;font-size:14.5px;
+  }
+  .acciones{display:flex;flex-wrap:wrap;gap:11px;margin-top:20px}
+  .boton{
+    flex:1 1 210px;display:block;text-align:center;padding:16px 22px;
+    border-radius:11px;font-weight:800;font-size:15.5px;text-decoration:none;
+    border:none;cursor:pointer;font-family:inherit;
+  }
+  .primario{background:var(--coral);color:#fff}
+  .secundario{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+
+  footer{padding:26px 0 40px;text-align:center;color:var(--gris);font-size:13px}
+  footer a{color:var(--gris)}
+
+  @media (max-width:420px){
+    .fila{flex-wrap:wrap}
+    .valor{min-width:100%;text-align:left;order:-1;margin-bottom:6px}
+  }
+</style>
+</head>
+<body>
+<div class="franja"></div>
+<div class="envoltura">
+
+  <header><div class="marca">SORA SYSTEMS</div></header>
+
+  <section class="hero">
+    <h1>¿Cuánto pierdes por no recuperar carritos?</h1>
+    <p>Siete de cada diez personas llenan el carrito y se van. Mueve las tres
+       barras y te decimos cuánto dinero es eso en tu tienda, cada mes.</p>
+  </section>
+
+  <div class="tarjeta">
+    <div class="campo">
+      <label for="visitas">Visitas al mes</label>
+      <div class="ayuda">Lo que te marque Google Analytics o el panel de tu tienda.</div>
+      <div class="fila">
+        <input type="range" id="visitas" min="1000" max="200000" step="1000" value="30000">
+        <div class="valor" id="vVisitas">30.000</div>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="conversion">De cada 100 visitas, ¿cuántas compran?</label>
+      <div class="ayuda">En tiendas españolas suele estar entre 1 y 2.</div>
+      <div class="fila">
+        <input type="range" id="conversion" min="2" max="60" step="1" value="18">
+        <div class="valor" id="vConversion">1,8 %</div>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="ticket">Pedido medio</label>
+      <div class="ayuda">Lo que se gasta de media quien te compra.</div>
+      <div class="fila">
+        <input type="range" id="ticket" min="10" max="400" step="5" value="60">
+        <div class="valor" id="vTicket">60 €</div>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>¿Tienes correos automáticos de carrito abandonado?</label>
+      <div class="ayuda">Si no lo sabes seguro, casi siempre es que no.</div>
+      <div class="interruptor" role="group" aria-label="¿Tienes correos automáticos?">
+        <button type="button" id="btnNo"  aria-pressed="true">No, o no lo sé</button>
+        <button type="button" id="btnSi"  aria-pressed="false">Sí, ya los tengo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="resultado">
+    <div class="rotulo">Te estás dejando cada mes, aproximadamente</div>
+    <div class="cifra" id="perdidoMes">—</div>
+    <div class="anual" id="perdidoAno">—</div>
+
+    <div class="desglose">
+      <div class="dato"><div class="n" id="dPedidos">—</div>
+        <div class="t">pedidos al mes</div></div>
+      <div class="dato"><div class="n" id="dAbandonados">—</div>
+        <div class="t">carritos abandonados al mes</div></div>
+      <div class="dato"><div class="n" id="dRecuperables">—</div>
+        <div class="t">recuperables con las secuencias montadas</div></div>
+    </div>
+  </div>
+
+  <div class="supuestos">
+    <strong>CÓMO SALE ESTA CIFRA</strong>
+    Partimos de que se abandonan 70 de cada 100 carritos y de que una secuencia
+    bien montada recupera en torno al 8 %. Es una estimación con medias del
+    sector, no una promesa. Con los números reales de tu tienda la afinamos
+    en diez minutos, y si sale menos de lo que pone aquí, te lo decimos.
+  </div>
+
+  <div class="cierre">
+    <h2>Te lo miramos gratis, con tu tienda de verdad</h2>
+    <p>Entramos en tu tienda, dejamos un carrito a medias y esperamos tres días
+       a ver qué llega. Te mandamos un informe de dos páginas con lo que hay y
+       lo que falta. Sin compromiso y sin llamada de ventas.</p>
+    <div class="bf">El Black Friday es el 27 de noviembre. Lo que montes ahora lo cobras ahí.</div>
+    <div class="acciones">
+      <a class="boton primario" id="ctaWhatsapp"
+         href="https://wa.me/?text=Hola,%20quiero%20la%20revisi%C3%B3n%20gratis%20de%20mi%20tienda"
+         target="_blank" rel="noopener">Quiero la revisión gratis</a>
+      <a class="boton secundario" href="https://sorasystems.es">Ver qué hacemos</a>
+    </div>
+  </div>
+
+  <footer>
+    <a href="https://sorasystems.es">sorasystems.es</a>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Los mismos supuestos que radar/rubrica.py. Si cambian alli, cambian aqui:
+  // una cifra distinta en la web y en el PDF se nota y cuesta la venta.
+  var TASA_ABANDONO      = 0.70;
+  var RECUPERACION_BUENA = 0.08;
+  // Deliberadamente por ENCIMA del suelo de rubrica.py (0.01 y 0.045): esta
+  // calculadora es una autoevaluacion a ojo, no una medicion. Al quedarse
+  // corta, la auditoria real casi siempre revela una cifra MAYOR que la que
+  // vio aqui el cliente. Nunca al reves: prometer mas de lo que luego
+  // aparece mata la venta en la primera reunion.
+  var RECUPERACION_MIN   = 0.02;
+  var RECUPERACION_MEDIA = 0.05;
+
+  var tieneSecuencias = false;
+
+  function $(id){ return document.getElementById(id); }
+
+  // Agrupado de millares a mano y no con Intl: es-ES no separa los numeros de
+  // cuatro cifras ("4536"), y el PDF del informe si lo hace ("4.536"). Ver la
+  // misma cifra escrita de dos formas distintas en la web y en el informe
+  // resta credibilidad justo en el momento de la venta.
+  function miles(n){
+    return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+  function entero(n){ return miles(n); }
+
+  function calcular(){
+    var visitas    = +$("visitas").value;
+    var conversion = +$("conversion").value / 1000;   // 18 -> 0.018
+    var ticket     = +$("ticket").value;
+
+    var pedidos      = visitas * conversion;
+    var creados      = pedidos / (1 - TASA_ABANDONO);
+    var abandonados  = creados - pedidos;
+
+    var actual       = tieneSecuencias ? RECUPERACION_MEDIA : RECUPERACION_MIN;
+    var hoy          = abandonados * actual * ticket;
+    var recuperables = abandonados * RECUPERACION_BUENA * ticket;
+    var perdido      = Math.max(recuperables - hoy, 0);
+
+    $("vVisitas").textContent    = miles(visitas);
+    $("vConversion").textContent = (conversion * 100).toLocaleString("es-ES",
+                                    {minimumFractionDigits:1, maximumFractionDigits:1}) + " %";
+    $("vTicket").textContent     = ticket + " €";
+
+    $("perdidoMes").textContent  = entero(perdido) + " €";
+    $("perdidoAno").textContent  = "Son unos " + entero(perdido * 12) + " € al año.";
+
+    $("dPedidos").textContent      = entero(pedidos);
+    $("dAbandonados").textContent  = entero(abandonados);
+    $("dRecuperables").textContent = entero(recuperables / ticket) + " pedidos";
+  }
+
+  ["visitas","conversion","ticket"].forEach(function(id){
+    $(id).addEventListener("input", calcular);
+  });
+
+  function elegir(valor){
+    tieneSecuencias = valor;
+    $("btnSi").setAttribute("aria-pressed", String(valor));
+    $("btnNo").setAttribute("aria-pressed", String(!valor));
+    calcular();
+  }
+  $("btnSi").addEventListener("click", function(){ elegir(true); });
+  $("btnNo").addEventListener("click", function(){ elegir(false); });
+
+  calcular();
+})();
+</script>
+</body>
+</html>
