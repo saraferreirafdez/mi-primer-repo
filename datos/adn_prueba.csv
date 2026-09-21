@@ -1,0 +1,11 @@
+dominio,grupo,plataforma,esp,estado,es_tienda,necesita_html,evidencia,nota
+komvida.com,1,shopify,shopify_email,shopify confirmado,1,0,SPF: v=spf1 a mx ip4:82.98.181.151 include:_spf.google.com include:shops.shopify.com ~all,
+laconicum.com,1,shopify,shopify_email,shopify confirmado,1,0,SPF: v=spf1 include:_spf.google.com include:shops.shopify.com include:helpscoutemail.com ~all,
+freshlycosmetics.com,1,,mailchimp,sin confirmar (pasa a HTML),0,1,DKIM k1._domainkey -> dkim.mcsv.net,
+twothirds.com,1,,mailchimp,sin confirmar (pasa a HTML),0,1,DKIM k1._domainkey -> dkim.mcsv.net,
+alohas.io,2,shopify,,shopify confirmado,1,0,,
+bluebananabrand.com,2,shopify,sendgrid,shopify confirmado,1,0,DKIM s1._domainkey -> s1.domainkey.u41100264.wl015.sendgrid.net,"sendgrid es transaccional, no dice nada del marketing"
+gobik.com,2,shopify,,shopify confirmado,1,0,,
+scuffers.com,2,shopify,,shopify confirmado,1,0,,
+sepiia.com,2,shopify,,shopify confirmado,1,0,,
+singularu.com,2,shopify,sendgrid,shopify confirmado,1,0,DKIM s1._domainkey -> s1.domainkey.u161779.wl030.sendgrid.net,"sendgrid es transaccional, no dice nada del marketing"

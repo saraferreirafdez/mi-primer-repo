@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from radar import almacen
 from radar.alias import alias_para
+from radar.adn import analizar_lote
 from radar.detectar import detectar, detectar_lote
 from radar.informe import generar
 from radar.modelos import Auditoria, Tienda
@@ -71,6 +72,49 @@ def cmd_detectar(args) -> int:
     print(f"PRIORIDAD BAJA   (ya en Klaviyo) .................. {conteo['baja']:4}")
     print(f"ERRORES ........................................... {conteo['error']:4}")
     print(f"\nGuardado en {salida}. Empieza por las de prioridad maxima.")
+    return 0
+
+
+def cmd_adn(args) -> int:
+    """Prefiltro por DNS: gratis, ~20 dominios/segundo, sin bajar HTML."""
+    dominios = [l.strip() for l in Path(args.entrada).read_text(encoding="utf-8").splitlines()
+                if l.strip() and not l.startswith("#")]
+    print(f"Consultando el DNS de {len(dominios)} dominios...\n")
+    filas, conteo = [], {1: 0, 2: 0, 3: 0}
+    confirmadas = pendientes = errores = 0
+
+    for a in analizar_lote(dominios, hilos=args.hilos):
+        if a.error:
+            errores += 1
+            continue
+        conteo[a.grupo] += 1
+        if a.es_tienda:
+            confirmadas += 1
+        elif a.necesita_html:
+            pendientes += 1
+        filas.append(a)
+        if a.grupo == 1:
+            print(f"  G1  {a.dominio:34} {a.esp:15} {a.estado}")
+
+    filas.sort(key=lambda a: (a.grupo, not a.es_tienda, a.dominio))
+    salida = Path(args.salida)
+    salida.parent.mkdir(parents=True, exist_ok=True)
+    with salida.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["dominio", "grupo", "plataforma", "esp", "estado",
+                    "es_tienda", "necesita_html", "evidencia", "nota"])
+        for a in filas:
+            w.writerow([a.dominio, a.grupo, a.plataforma, a.esp, a.estado,
+                        int(a.es_tienda), int(a.necesita_html), a.evidencia, a.nota])
+
+    print(f"\n{'=' * 62}")
+    print(f"GRUPO 1  migrables (Mailchimp, Brevo...) .... {conteo[1]:5}  <- empieza por aqui")
+    print(f"GRUPO 2  sin huella de marketing ............ {conteo[2]:5}")
+    print(f"GRUPO 3  ya tienen Klaviyo .................. {conteo[3]:5}")
+    print(f"\nShopify confirmado por DNS .................. {confirmadas:5}")
+    print(f"Sin confirmar (pasan a `detectar`) .......... {pendientes:5}")
+    print(f"Errores de DNS .............................. {errores:5}")
+    print(f"\nGuardado en {salida}")
     return 0
 
 
@@ -147,6 +191,12 @@ def main() -> int:
     d.add_argument("--salida", default="datos/clasificadas.csv")
     d.add_argument("--hilos", type=int, default=8)
     d.set_defaults(func=cmd_detectar)
+
+    a = sub.add_parser("adn", help="prefiltro por DNS: gratis y rapidisimo")
+    a.add_argument("--entrada", default="datos/dominios.txt")
+    a.add_argument("--salida", default="datos/adn.csv")
+    a.add_argument("--hilos", type=int, default=40)
+    a.set_defaults(func=cmd_adn)
 
     s = sub.add_parser("sondear", help="abandona un carrito en una o varias tiendas")
     s.add_argument("--url")
