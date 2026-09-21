@@ -45,6 +45,30 @@ HUELLAS_ESP: dict[str, list[str]] = {
     "mailgun":        ["mailgun.org"],
 }
 
+# Tokens de verificación de propiedad publicados como TXT en la RAÍZ.
+# Hallazgo de Cowork (21/09/2026), y es la señal más temprana que existe:
+# el cliente publica este TXT al CONECTAR la plataforma, mientras que la
+# firma DKIM solo aparece después y solo si llega a configurar envío con
+# marca propia, cosa que muchos no hacen nunca. Mirar la raíz ve más.
+TOKENS_RAIZ: dict[str, list[str]] = {
+    "klaviyo":        ["klaviyo-site-verification"],
+    "brevo":          ["brevo-code", "sendinblue-code"],
+    "omnisend":       ["omnisend-site-verification", "omnisend-verification"],
+    "mailchimp":      ["mailchimp-domain-verification", "mailchimp-verification"],
+    "activecampaign": ["activecampaign-site-verification"],
+    "hubspot":        ["hubspot-developer-verification"],
+}
+
+# Verificado empíricamente el 21/09/2026 sobre los cinco dominios que nombró
+# Cowork: los cinco publican klaviyo-site-verification en la raíz.
+# Para Mailchimp, Omnisend y Brevo los prefijos de arriba están puestos por
+# analogía y NO confirmados: si alguno no existe, simplemente nunca coincide
+# y la detección cae en el DKIM de siempre. No hace daño.
+
+# Otra señal útil encontrada de paso: shopify-verification-code en la raíz
+# confirma tienda Shopify aunque haya un CDN ocultando la IP de origen.
+TOKEN_SHOPIFY = "shopify-verification-code"
+
 # Selectores DKIM típicos, para el segundo intento cuando el SPF no dice nada.
 SELECTORES = ["klaviyo._domainkey", "k1._domainkey", "k2._domainkey",
               "s1._domainkey", "s2._domainkey", "dkim._domainkey"]
@@ -71,6 +95,7 @@ class Adn:
     esp: str = ""
     evidencia: str = ""
     error: str = ""
+    shopify_por_token: bool = False
 
     @property
     def grupo(self) -> int:
@@ -83,8 +108,12 @@ class Adn:
 
     @property
     def es_tienda(self) -> bool:
-        """Shopify CONFIRMADO por el rango de IP. Un sí aquí es seguro."""
-        return self.plataforma == "shopify"
+        """Shopify confirmado, por rango de IP o por el TXT de verificación.
+
+        El token rescata a las tiendas que están tras un CDN y cuya IP de
+        origen no se ve.
+        """
+        return self.plataforma == "shopify" or self.shopify_por_token
 
     @property
     def necesita_html(self) -> bool:
@@ -150,19 +179,39 @@ def _buscar_huella(texto: str) -> str:
     return ""
 
 
-def _esp(dominio: str, r: dns.resolver.Resolver) -> tuple[str, str]:
-    """Devuelve (esp, evidencia) mirando SPF y después CNAME de firma."""
-    # 1. SPF de la raíz: lo declara casi todo el mundo.
+def _esp(dominio: str, r: dns.resolver.Resolver) -> tuple[str, str, bool]:
+    """Devuelve (esp, evidencia, shopify_por_token).
+
+    Mira, por este orden: tokens de verificación en la raíz, SPF y CNAME de
+    firma DKIM. Los tokens van primero porque son la señal más temprana.
+    """
+    esp_spf = evidencia_spf = ""
+    shopify_token = False
+
+    # 1. Una sola consulta TXT a la raíz sirve para las dos cosas.
     try:
         for dato in r.resolve(dominio, "TXT"):
             texto = b" ".join(dato.strings).decode("utf-8", "ignore")
-            if "v=spf1" not in texto.lower():
+            bajo = texto.lower()
+
+            if bajo.startswith(TOKEN_SHOPIFY):
+                shopify_token = True
                 continue
-            esp = _buscar_huella(texto)
-            if esp:
-                return esp, f"SPF: {texto[:110]}"
+
+            for esp, prefijos in TOKENS_RAIZ.items():
+                if any(bajo.startswith(p) for p in prefijos):
+                    # El token es la señal más fiable: se devuelve ya.
+                    return esp, f"TXT raíz: {texto[:80]}", shopify_token
+
+            if "v=spf1" in bajo and not esp_spf:
+                encontrado = _buscar_huella(texto)
+                if encontrado:
+                    esp_spf, evidencia_spf = encontrado, f"SPF: {texto[:100]}"
     except Exception:
         pass
+
+    if esp_spf:
+        return esp_spf, evidencia_spf, shopify_token
 
     # 2. CNAME de firma DKIM: más específico, delata al proveedor exacto.
     for selector in SELECTORES:
@@ -171,10 +220,10 @@ def _esp(dominio: str, r: dns.resolver.Resolver) -> tuple[str, str]:
                 destino = str(dato.target).rstrip(".")
                 esp = _buscar_huella(destino)
                 if esp:
-                    return esp, f"DKIM {selector} -> {destino[:70]}"
+                    return esp, f"DKIM {selector} -> {destino[:70]}", shopify_token
         except Exception:
             continue
-    return "", ""
+    return "", "", shopify_token
 
 
 def analizar(dominio: str) -> Adn:
@@ -190,7 +239,9 @@ def analizar(dominio: str) -> Adn:
     r = _resolver()
     try:
         adn.plataforma, adn.ip = _plataforma(dominio, r)
-        adn.esp, adn.evidencia = _esp(dominio, r)
+        adn.esp, adn.evidencia, adn.shopify_por_token = _esp(dominio, r)
+        if adn.shopify_por_token and not adn.plataforma:
+            adn.plataforma = "shopify"
     except Exception as e:
         adn.error = f"{type(e).__name__}"[:60]
     if not adn.ip and not adn.esp:
