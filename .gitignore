@@ -5,3 +5,5 @@ datos/clasificadas.csv
 informes/*.pdf
 informes/capturas/
 .env
+datos/redactados/
+datos/*.csv
