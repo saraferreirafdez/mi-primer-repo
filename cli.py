@@ -27,6 +27,7 @@ from radar.detectar import detectar, detectar_lote
 from radar.informe import generar
 from radar.modelos import Auditoria, Tienda
 from radar.rubrica import estimar, puntuar
+from radar.verificar import verificar_lote
 from radar.sonda import pausa_educada, sondear
 
 ORDEN_PRIORIDAD = {"maxima": 0, "media": 1, "baja": 2, "error": 3}
@@ -118,6 +119,54 @@ def cmd_adn(args) -> int:
     return 0
 
 
+def cmd_verificar(args) -> int:
+    """Fase 2: confirma por el codigo de la portada. Quita los falsos positivos."""
+    ruta = Path(args.entrada)
+    if ruta.suffix == ".csv":
+        with ruta.open(encoding="utf-8") as f:
+            filas = list(csv.DictReader(f))
+        campo = next((c for c in ("dominio", "url", "web") if filas and c in filas[0]), None)
+        if not campo:
+            print(f"No encuentro columna de dominio en {ruta}")
+            return 1
+        dominios = [f[campo].strip() for f in filas if f.get(campo, "").strip()]
+    else:
+        dominios = [l.strip() for l in ruta.read_text(encoding="utf-8").splitlines()
+                    if l.strip() and not l.startswith("#")]
+
+    print(f"Verificando el codigo de {len(dominios)} tiendas...\n")
+    escribibles, descartadas, fallidas = [], [], []
+    for v in verificar_lote(dominios, hilos=args.hilos):
+        if v.error:
+            fallidas.append(v)
+        elif v.escribible:
+            escribibles.append(v)
+            print(f"  OK       {v.dominio:36} {v.plataforma or '-':13} escribible")
+        else:
+            descartadas.append(v)
+            print(f"  DESCARTA {v.dominio:36} {v.motivo[:44]}")
+
+    salida = Path(args.salida)
+    salida.parent.mkdir(parents=True, exist_ok=True)
+    with salida.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["dominio", "plataforma", "escribible", "motivo",
+                    "esps", "captadores", "captura_email"])
+        for v in escribibles + descartadas + fallidas:
+            w.writerow([v.dominio, v.plataforma, int(v.escribible), v.motivo,
+                        "|".join(v.esps), "|".join(v.captadores), int(v.captura_email)])
+
+    total = len(escribibles) + len(descartadas)
+    tasa = (len(descartadas) / total * 100) if total else 0
+    print(f"\n{'=' * 62}")
+    print(f"ESCRIBIBLES (sin sistema de recuperacion) ... {len(escribibles):4}")
+    print(f"DESCARTADAS (ya tienen algo puesto) ........ {len(descartadas):4}  ({tasa:.1f}% falsos positivos)")
+    print(f"NO VERIFICABLES (fallo de red) ............. {len(fallidas):4}")
+    print(f"\nGuardado en {salida}")
+    print("Solo se escribe a las escribibles. Las demas ya tienen el sistema.")
+    return 0
+
+
 def cmd_sondear(args) -> int:
     conexion = almacen.abrir()
     urls = [args.url] if args.url else _leer_urls(Path(args.entrada))
@@ -197,6 +246,12 @@ def main() -> int:
     a.add_argument("--salida", default="datos/adn.csv")
     a.add_argument("--hilos", type=int, default=40)
     a.set_defaults(func=cmd_adn)
+
+    v = sub.add_parser("verificar", help="FASE 2: confirma por codigo antes de escribir")
+    v.add_argument("--entrada", default="datos/adn.csv")
+    v.add_argument("--salida", default="datos/escribibles.csv")
+    v.add_argument("--hilos", type=int, default=4)
+    v.set_defaults(func=cmd_verificar)
 
     s = sub.add_parser("sondear", help="abandona un carrito en una o varias tiendas")
     s.add_argument("--url")

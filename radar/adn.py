@@ -54,10 +54,16 @@ TOKENS_RAIZ: dict[str, list[str]] = {
     "klaviyo":        ["klaviyo-site-verification"],
     "brevo":          ["brevo-code", "sendinblue-code"],
     "omnisend":       ["omnisend-site-verification", "omnisend-verification"],
-    "mailchimp":      ["mailchimp-domain-verification", "mailchimp-verification"],
     "activecampaign": ["activecampaign-site-verification"],
     "hubspot":        ["hubspot-developer-verification"],
 }
+
+# MAILCHIMP NO PUBLICA TOKEN DE RAÍZ. Confirmado por CoWork el 21/09/2026
+# volcando los TXT completos de freshlycosmetics.com y twothirds.com (9 y 6
+# registros, TC=false, sin truncar): en los dos está el include del SPF
+# servers.mcsv.net y en ninguno hay token de Mailchimp. Su detección se
+# queda en SPF + DKIM, y por eso NO aparece en la tabla de arriba.
+# Brevo y Omnisend siguen por analogía: sin evidencia en ningún sentido.
 
 # Verificado empíricamente el 21/09/2026 sobre los cinco dominios que nombró
 # Cowork: los cinco publican klaviyo-site-verification en la raíz.
@@ -68,6 +74,10 @@ TOKENS_RAIZ: dict[str, list[str]] = {
 # Otra señal útil encontrada de paso: shopify-verification-code en la raíz
 # confirma tienda Shopify aunque haya un CDN ocultando la IP de origen.
 TOKEN_SHOPIFY = "shopify-verification-code"
+
+# Segunda señal de Shopify, aportada por CoWork: twothirds.com no lleva el
+# token pero sí este include en el SPF. Rescata dominios que el token no cubre.
+INCLUDE_SHOPIFY = "shops.shopify.com"
 
 # Selectores DKIM típicos, para el segundo intento cuando el SPF no dice nada.
 SELECTORES = ["klaviyo._domainkey", "k1._domainkey", "k2._domainkey",
@@ -96,6 +106,7 @@ class Adn:
     evidencia: str = ""
     error: str = ""
     shopify_por_token: bool = False
+    pendiente: bool = False   # timeout de DNS: hay que reintentar, no descartar
 
     @property
     def grupo(self) -> int:
@@ -134,6 +145,8 @@ class Adn:
 
     @property
     def estado(self) -> str:
+        if self.pendiente:
+            return "pendiente (reintentar)"
         if self.error:
             return "error"
         if self.es_tienda:
@@ -194,9 +207,10 @@ def _esp(dominio: str, r: dns.resolver.Resolver) -> tuple[str, str, bool]:
             texto = b" ".join(dato.strings).decode("utf-8", "ignore")
             bajo = texto.lower()
 
-            if bajo.startswith(TOKEN_SHOPIFY):
+            if bajo.startswith(TOKEN_SHOPIFY) or INCLUDE_SHOPIFY in bajo:
                 shopify_token = True
-                continue
+                if bajo.startswith(TOKEN_SHOPIFY):
+                    continue
 
             for esp, prefijos in TOKENS_RAIZ.items():
                 if any(bajo.startswith(p) for p in prefijos):
@@ -246,6 +260,10 @@ def analizar(dominio: str) -> Adn:
         adn.error = f"{type(e).__name__}"[:60]
     if not adn.ip and not adn.esp:
         adn.error = adn.error or "sin respuesta DNS"
+    # Un timeout NO es un descarte. Suele darse en dominios con muchos TXT,
+    # que es señal de marca activa: justamente los que no hay que perder.
+    # Van a un fichero de pendientes para reintentarlos por otra vía.
+    adn.pendiente = "Timeout" in adn.error or "sin respuesta" in adn.error
     return adn
 
 

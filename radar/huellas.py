@@ -45,12 +45,22 @@ ESPS: dict[str, list[str]] = {
         "prism.app-us1.com", "trackcmp.net", "activehosted.com",
         "activecampaign.com",
     ],
+    "connectif": ["connectif.ai", "connectif.cloud", "cdn.connectif"],
+    "mailerlite": ["mailerlite.com", "ml-attr", "mlsend.com"],
+    "doppler": ["fromdoppler.com", "doppler.io"],
+    "acumbamail": ["acumbamail.com"],
     "drip": ["getdrip.com", "drip.com/", "_dcq"],
     "hubspot": ["js.hs-scripts.com", "hs-analytics", "hubspot.com/"],
     "shopify_email": ["shopify_email", "shopifyemail"],
 }
 
-# Herramientas de captacion / popup. No son ESP pero indican intencion.
+# Connectif es española y en el mercado español pesa tanto como Klaviyo o
+# Mailchimp. CoWork la encontró en 11 de 41 tiendas el 22/09/2026 y por DNS
+# se escapaba casi entera. Va al primer nivel, no como secundaria.
+
+# Herramientas de captacion / popup. No son ESP, pero si una tienda paga un
+# captador de carrito YA TRABAJA EL ABANDONO: no es clienta aunque no se le
+# detecte ESP. Verlas aquí descarta, no suma.
 CAPTACION: dict[str, list[str]] = {
     "privy": ["privy.com", "privymktg", "widget.privy"],
     "attentive": ["attentivemobile.com", "attn.tv"],
