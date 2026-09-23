@@ -153,6 +153,21 @@ def main() -> int:
         print(f"  {ruta.name}: {len(leidas)} adjudicaciones")
         todas += leidas
 
+    # Un mismo contrato reaparece en varios ficheros y en varios días cuando
+    # el órgano lo actualiza. Aviso de CoWork, y se nota: sin esto la misma
+    # adjudicación cuenta dos veces y falsea el embudo. Clave: expediente +
+    # lote + NIF; nos quedamos con la de fecha de contrato más reciente.
+    antes = len(todas)
+    unicas_adj: dict[tuple, Adjudicacion] = {}
+    for a in todas:
+        clave = (a.expediente, a.lote, a.nif)
+        previa = unicas_adj.get(clave)
+        if previa is None or (a.fecha_contrato or "") > (previa.fecha_contrato or ""):
+            unicas_adj[clave] = a
+    todas = list(unicas_adj.values())
+    if antes != len(todas):
+        print(f"  repetidas entre ficheros: {antes - len(todas)}")
+
     buenas, motivos = filtrar(todas)
 
     # una empresa puede ganar varios lotes: se escribe una vez
