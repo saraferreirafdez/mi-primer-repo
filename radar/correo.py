@@ -17,6 +17,10 @@ con que el dueño mire su panel. Costaría la venta y la credibilidad.
 
 Forma del correo, y es deliberada:
   · un hallazgo concreto sobre SU tienda, no un argumentario
+  · lo que ese hallazgo les CUESTA, en euros, porque es lo que mueve a
+    alguien a contestar. Pero siempre sobre un ejemplo declarado como
+    ejemplo y con la media del sector dicha como media: nunca una cifra
+    inventada sobre SU facturación, que no conocemos
   · sin precio, sin oferta y sin catálogo
   · firmado, con identidad real y web
   · con una línea de baja que se respeta a la primera
@@ -26,7 +30,28 @@ LSSI: no es una comunicación comercial masiva, es un aviso individual.
 
 from __future__ import annotations
 
+import textwrap
 from dataclasses import dataclass
+
+ANCHO = 74
+
+
+def ajustar(texto: str) -> str:
+    """Reajusta los párrafos a ANCHO columnas.
+
+    El cuerpo se compone con trozos de longitud variable —el nombre de la
+    plataforma, el matiz del formulario—, así que las líneas quedan
+    descuadradas si se dejan como se escribieron. Un correo con un párrafo
+    de 140 caracteres y el resto a 74 se lee como una plantilla mal hecha,
+    que es justo lo que no queremos parecer.
+
+    Los párrafos se separan por línea en blanco y se respetan.
+    """
+    partes = []
+    for parrafo in texto.split("\n\n"):
+        suelto = " ".join(parrafo.split())
+        partes.append(textwrap.fill(suelto, ANCHO) if suelto else "")
+    return "\n\n".join(partes)
 
 NOMBRES_PLATAFORMA = {
     "shopify": "Shopify", "woocommerce": "WooCommerce",
@@ -80,16 +105,25 @@ Estuve mirando {dominio} y me quedé con un detalle que igual os interesa.
 No encuentro instalada ninguna herramienta de recuperación de carrito. Ni
 Klaviyo, ni Mailchimp, ni Connectif, ni Brevo. {matiz}
 
-Por qué lo miro: siete de cada diez personas que llenan un carrito lo dejan
-a medias. Sin una secuencia automática detrás, esas ventas no se recuperan;
-simplemente se pierden.{en_plataforma} se arregla con tres correos
-automáticos —uno a la hora, otro al día siguiente y otro a los tres días—
-con la foto y el nombre de lo que la persona se dejó. Es de las pocas cosas
-del comercio online que se montan una vez y siguen trabajando solas.
+Y esto es lo que cuesta, que es la parte que no se ve. Siete de cada diez
+personas que llenan un carrito lo dejan a medias: es la media del comercio
+online, no un dato vuestro. Con esa proporción, una tienda que factura
+8.000 € al mes deja por el camino otros 18.000 € que estuvieron a un clic
+de pagarse. Cambia los 8.000 por vuestra cifra y sale la vuestra.
 
-Te lo cuento por si no lo teníais visto. No hace falta que me contestes.
+De eso se recupera, tirando por lo bajo, entre un 1 % y un 2 % con tres
+correos automáticos detrás: uno a la hora, otro al día siguiente y otro a
+los tres días, con la foto y el nombre de lo que la persona se dejó. Sobre
+el ejemplo de arriba son entre 180 y 360 € al mes. Unos 4.000 € al año que
+hoy no existen, de ventas que ya casi teníais.{en_plataforma} se monta una
+vez y sigue trabajando solo, sin que nadie tenga que acordarse.
+
+No te pido nada. Te lo cuento por si no lo teníais visto, y porque el
+número de arriba lo puedes comprobar tú mismo en tu panel en dos minutos.
 
 {FIRMA}"""
+
+    cuerpo = ajustar(cuerpo.split(FIRMA)[0]).rstrip() + "\n\n" + FIRMA
 
     return Correo(para=correo, asunto=f"una cosa que vi en {dominio}",
                   cuerpo=cuerpo, dominio=dominio, plantilla="hallazgo")
