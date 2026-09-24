@@ -7,3 +7,4 @@ informes/capturas/
 .env
 datos/redactados/
 datos/*.csv
+datos/placsp/
