@@ -101,13 +101,23 @@ def limpiar_objeto(texto: str) -> str:
     """
     t = html.unescape(texto or "").replace("\xa0", " ")
     t = re.sub(r"(?<=[a-zA-ZçÇ])\?(?=[a-zA-Z])", "'", t)   # d?entre -> d'entre
+    # El apostrofo curvo hacia que «l'objecte d'aquest contracte» no
+    # coincidiera con ningun preambulo y se colara entero en el correo.
+    t = t.replace("\u2019", "'").replace("\u2018", "'")
     t = re.sub(r"\s+", " ", t).strip()
     for p in PREAMBULOS:
         nuevo = re.sub(p, "", t, flags=re.I)
         if nuevo != t:
             t = nuevo.strip()
             break
-    return t[:1].lower() + t[1:] if t else t
+    if not t:
+        return t
+    # Bajar la inicial, salvo si la primera palabra son siglas («BG - Obres»),
+    # que quedaban como «bG».
+    primera = t.split(" ", 1)[0]
+    if primera.isupper() and len(primera) > 1:
+        return t
+    return t[:1].lower() + t[1:]
 
 
 # Palabras con las que no puede acabar una frase recortada: dejan al lector
