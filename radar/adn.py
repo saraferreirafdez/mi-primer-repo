@@ -80,8 +80,33 @@ TOKEN_SHOPIFY = "shopify-verification-code"
 INCLUDE_SHOPIFY = "shops.shopify.com"
 
 # Selectores DKIM típicos, para el segundo intento cuando el SPF no dice nada.
+#
+# Los de los ESP van primero. Detrás van los de los PROVEEDORES DE CORREO,
+# que no son lo mismo: IONOS o Google alojan el buzón, no hacen campañas.
+#
+# Los de IONOS llevan guion («s1-ionos», no «s1») y por eso se escapaban. Me
+# lo dijo CoWork por escrito el 22/09 en el doc 19 del buzón, después de que
+# le pasara a él, y no lo metí. El 25/09 volví a tropezar en la misma
+# piedra: di por hecho que sorasystems.es no tenía DKIM porque probé 22
+# selectores y ninguno era el bueno, y monté un aviso urgente sobre eso.
+# Sí lo tenía, en s1-ionos y s2-ionos, desde el día 22.
 SELECTORES = ["klaviyo._domainkey", "k1._domainkey", "k2._domainkey",
-              "s1._domainkey", "s2._domainkey", "dkim._domainkey"]
+              "s1._domainkey", "s2._domainkey", "dkim._domainkey",
+              "s1-ionos._domainkey", "s2-ionos._domainkey",
+              "google._domainkey", "selector1._domainkey",
+              "selector2._domainkey", "default._domainkey"]
+
+# Quién aloja el buzón. NO es un ESP: encontrar esto significa que la tienda
+# no tiene herramienta de marketing, que es justo la señal que buscamos.
+# Antes devolvíamos vacío y no se distinguía «no hay ESP» de «no hemos
+# encontrado nada», que son cosas distintas a la hora de fiarse del dato.
+HUELLAS_CORREO: dict[str, list[str]] = {
+    "IONOS":     ["dkim.ionos.com", "ionos", "kundenserver", "1und1"],
+    "Google":    ["google.com", "googlemail"],
+    "Microsoft": ["outlook.com", "microsoft"],
+    "OVH":       ["ovh.net", "ovh.com"],
+    "Zoho":      ["zoho.com", "zohomail"],
+}
 
 # Plataformas de MARKETING migrables: una migración genera MRR referido y
 # gestionado a la vez, que es lo que pide el escalón Silver de Klaviyo.
@@ -192,6 +217,15 @@ def _buscar_huella(texto: str) -> str:
     return ""
 
 
+
+def _buscar_correo(texto: str) -> str:
+    """Quién aloja el buzón, si lo que aparece no es un ESP."""
+    t = texto.lower()
+    for proveedor, huellas in HUELLAS_CORREO.items():
+        if any(h in t for h in huellas):
+            return proveedor
+    return ""
+
 def _esp(dominio: str, r: dns.resolver.Resolver) -> tuple[str, str, bool]:
     """Devuelve (esp, evidencia, shopify_por_token).
 
@@ -228,6 +262,10 @@ def _esp(dominio: str, r: dns.resolver.Resolver) -> tuple[str, str, bool]:
         return esp_spf, evidencia_spf, shopify_token
 
     # 2. CNAME de firma DKIM: más específico, delata al proveedor exacto.
+    #    Si lo que aparece es el proveedor del buzón y no un ESP, se anota
+    #    igualmente: «su correo está en IONOS y no hay herramienta de
+    #    marketing» es un dato, y «no encontré nada» es no saber.
+    correo = ""
     for selector in SELECTORES:
         try:
             for dato in r.resolve(f"{selector}.{dominio}", "CNAME"):
@@ -235,8 +273,12 @@ def _esp(dominio: str, r: dns.resolver.Resolver) -> tuple[str, str, bool]:
                 esp = _buscar_huella(destino)
                 if esp:
                     return esp, f"DKIM {selector} -> {destino[:70]}", shopify_token
+                if not correo:
+                    correo = _buscar_correo(destino) or ""
         except Exception:
             continue
+    if correo:
+        return "", f"sin ESP; el correo lo aloja {correo}", shopify_token
     return "", "", shopify_token
 
 
