@@ -92,6 +92,16 @@ PREAMBULOS = [
 ]
 
 
+# Erratas del propio origen: el organismo se comió un espacio al teclear el
+# objeto. No hay forma de detectarlas solas —«serveiadreçat» es una palabra
+# perfectamente válida para cualquier regla automática— así que se corrigen
+# una a una, según van apareciendo al leer los correos antes de enviarlos.
+# Restituir un espacio no cambia lo que dice el expediente.
+PEGADAS = {
+    "serveiadreçat": "servei adreçat",
+}
+
+
 def limpiar_objeto(texto: str) -> str:
     """Deja el objeto en algo que se pueda leer dentro de una frase.
 
@@ -105,6 +115,8 @@ def limpiar_objeto(texto: str) -> str:
     # coincidiera con ningun preambulo y se colara entero en el correo.
     t = t.replace("\u2019", "'").replace("\u2018", "'")
     t = re.sub(r"\s+", " ", t).strip()
+    for pegada, separada in PEGADAS.items():
+        t = re.sub(pegada, separada, t, flags=re.I)
     for p in PREAMBULOS:
         nuevo = re.sub(p, "", t, flags=re.I)
         if nuevo != t:
@@ -304,8 +316,56 @@ CIERRE = (
 )
 
 
+# Señales de que el objeto que publica la Plataforma no se puede citar tal
+# cual en un correo. Nacen de tres casos reales del lote del 24/09:
+#
+#   «sv planif medios, compra espacios, gen contenidos, escucha activa rrss»
+#        -> el organismo lo escribió en telegrama, con todo abreviado.
+#   «els Serveis d'Intervenció Socioeducativa (en endavant SIS) ... estan
+#    formats per diferents serveis»
+#        -> es un trozo de pliego, con su «en lo sucesivo» y cortado a media
+#           idea.
+#
+# Citar eso deja un correo que dice, en la práctica, «he copiado un campo de
+# una base de datos». Y el correo entero se sostiene sobre lo contrario:
+# sobre haberse mirado SU expediente. Cuando el objeto no está presentable,
+# sale mejor no ponerlo.
+ABREVIATURAS = {
+    "sv", "svs", "serv", "planif", "gen", "rrss", "ctto", "adq", "sum",
+    "manten", "mant", "asist", "redac", "sumin", "exp", "contr", "pta",
+}
+BOILERPLATE = (
+    "en endavant", "en adelante", "en lo sucesivo", "d'ara endavant",
+    "en endevant",
+)
+
+
+def objeto_fiable(t: str) -> bool:
+    """¿Se puede citar este objeto en un correo sin quedar mal?
+
+    No detecta todo —una palabra pegada por falta de un espacio en el origen
+    no hay forma de verla desde aquí— así que no sustituye a leer los
+    correos antes de que salgan. Lo que hace es quitar de en medio los dos
+    casos que sí se reconocen solos.
+    """
+    if not t or len(t) < 25:
+        return False
+    bajo = t.lower()
+    if any(b in bajo for b in BOILERPLATE):
+        return False
+    palabras = re.findall(r"[\w·'-]+", bajo)
+    if sum(1 for p in palabras if p in ABREVIATURAS) >= 2:
+        return False
+    return True
+
+
 def _apertura(c: Contrato, objeto: str) -> str:
     plazo = f", para {c.plazo}" if c.plazo else ""
+    # Sin objeto citable, la frase se cierra en el organismo. Antes quedaba
+    # «el de X: , para un año.», con la coma huérfana.
+    if not objeto:
+        return (f"Os escribo por el expediente {c.expediente}, "
+                f"el de {limpiar_organismo(c.organismo)}{plazo}.")
     return (f"Os escribo por el expediente {c.expediente}, el de "
             f"{limpiar_organismo(c.organismo)}: "
             f"{objeto}{plazo}.")
@@ -317,6 +377,8 @@ def correo_contrato(c: Contrato, destino: str) -> Correo | None:
     if h is None:
         return None
     objeto = recortar(limpiar_objeto(c.objeto))
+    if not objeto_fiable(objeto):
+        objeto = ""
     tope = c.adjudicado * TOPE_PENALIDADES
 
     if h.tipo == "baja":
