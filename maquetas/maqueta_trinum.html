@@ -1,152 +1,169 @@
-<title>Portada Clínica Trinum</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<title>Clínica Trinum · propuesta de Sora Systems</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap">
 
 <style>
-/* Maqueta de portada. Franja de Sora arriba y abajo, contenido del negocio en medio.
-   Luz mediterranea: arena calida, tinta verde-azulada profunda, coral y turquesa de Sora. */
+/* Identidad de Sora Systems. Los valores salen de sorasystems.es. */
 :root{
-  --arena:#FDF8F4; --arena-2:#F6E7DC; --tinta:#16323A; --tinta-sv:#4A6670;
-  --coral:#FF6B4A; --turquesa:#0E9488; --linea:#E8D8CC; --tarjeta:#FFFFFF;
-  --display:"Fraunces",Georgia,"Times New Roman",serif;
-  --texto:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --arena:#121C20; --arena-2:#1B2A2F; --tinta:#EDF4F2; --tinta-sv:#9DB4B9;
-  --coral:#FF8A6E; --turquesa:#3DC2B3; --linea:#28393F; --tarjeta:#1B2A2F;
-  color-scheme:dark;
-}}
-:root[data-theme="dark"]{
-  --arena:#121C20; --arena-2:#1B2A2F; --tinta:#EDF4F2; --tinta-sv:#9DB4B9;
-  --coral:#FF8A6E; --turquesa:#3DC2B3; --linea:#28393F; --tarjeta:#1B2A2F;
+  --fondo:#07090f; --turquesa:#2dd4bf; --violeta:#8b5cf6; --violeta-claro:#cbb9ff;
+  --texto:#eef1ff; --texto-2:#cdd3f0; --texto-3:#9aa3c7;
+  --linea:rgba(255,255,255,.12); --tarjeta:rgba(255,255,255,.04);
+  --borde-acento:rgba(45,212,191,.28);
+  --titular:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cuerpo:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:dark;
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--arena);color:var(--tinta);font-family:var(--texto);
-     font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
-.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));
-        padding-right:max(16px,env(safe-area-inset-right,0px))}
-.centro{max-width:1040px;margin:0 auto}
-h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;font-weight:600}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--cuerpo);color:var(--texto);background:var(--fondo);
+     line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+/* Los dos halos: turquesa arriba a la izquierda, violeta arriba a la derecha.
+   Es lo que hace que el fondo no parezca un negro plano. */
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(680px circle at 15% 0%,rgba(45,212,191,.12),transparent 55%),
+  radial-gradient(760px circle at 90% 12%,rgba(139,92,246,.16),transparent 55%),
+  var(--fondo)}
 a{color:inherit}
-.sora-top{background:var(--tinta);color:#FDF8F4}
-.sora-top .centro{padding-block:14px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline}
-.sora-marca{font-weight:700;letter-spacing:.14em;font-size:13px;color:#FF8A6E}
-.sora-aviso{font-size:14px;color:#BBD0D3;min-width:0}
-.nav .centro{padding-block:22px;display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
-.logo{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-.01em}
-.logo span{color:var(--turquesa)}
-.menu{display:flex;flex-wrap:wrap;gap:22px;margin-left:auto;font-size:15px;color:var(--tinta-sv)}
-.hero{position:relative;overflow:hidden;background:
-   radial-gradient(70% 90% at 82% 18%, color-mix(in srgb,var(--turquesa) 20%,transparent) 0%, transparent 62%),
-   radial-gradient(58% 80% at 12% 86%, color-mix(in srgb,var(--coral) 18%,transparent) 0%, transparent 60%),
-   var(--arena)}
-.hero .centro{padding-block:68px 60px;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
-.eyebrow{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--turquesa);font-weight:700}
-.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.04;letter-spacing:-.02em;margin:14px 0 18px}
-.hero p{font-size:clamp(17px,2.2vw,20px);color:var(--tinta-sv);margin:0 0 30px;max-width:46ch}
-.botones{display:flex;flex-wrap:wrap;gap:12px}
-.btn{display:inline-block;padding:14px 26px;border-radius:999px;font-weight:700;font-size:16px;
-     text-decoration:none;border:2px solid transparent}
-.btn-1{background:var(--coral);color:#fff}
-.btn-2{border-color:var(--linea);color:var(--tinta)}
-.retrato{aspect-ratio:4/5;max-width:100%;border-radius:200px 200px 24px 24px;
-  background:linear-gradient(170deg,color-mix(in srgb,var(--turquesa) 32%,var(--arena-2)),var(--arena-2));
-  border:1px solid var(--linea);display:grid;place-items:center;padding:24px;text-align:center}
-.retrato small{color:var(--tinta-sv);font-size:13px;line-height:1.5}
-.serv{background:var(--arena-2)}
-.serv .centro{padding-block:62px}
-.serv h2{font-size:clamp(26px,4vw,36px);letter-spacing:-.01em}
-.serv>.centro>p{color:var(--tinta-sv);margin:10px 0 34px;max-width:52ch}
-.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:18px}
-.tarjeta{background:var(--tarjeta);border:1px solid var(--linea);border-radius:16px;
-         padding:26px 24px;min-width:0;display:flex;flex-direction:column;gap:10px}
-.tarjeta .num{font-family:var(--display);font-size:15px;color:var(--coral);font-weight:700}
-.tarjeta h3{font-size:19px;line-height:1.3}
-.tarjeta p{margin:0;font-size:15px;color:var(--tinta-sv)}
-.datos .centro{padding-block:58px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px}
-.dato{min-width:0}
-.dato .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--turquesa);font-weight:700}
-.dato .v{font-family:var(--display);font-size:21px;margin-top:6px;line-height:1.35}
-.dato .s{font-size:15px;color:var(--tinta-sv);margin-top:4px}
-.cierre{background:var(--tinta);color:#FDF8F4}
-.cierre .centro{padding-block:52px;display:grid;grid-template-columns:1.4fr 1fr;gap:36px;align-items:center}
-.cierre h2{font-size:clamp(24px,3.6vw,34px);color:#fff;letter-spacing:-.01em}
-.cierre p{color:#BBD0D3;margin:12px 0 0;max-width:48ch}
-.precio{background:rgba(255,255,255,.06);border:1px solid rgba(255,138,110,.4);
-        border-radius:18px;padding:26px;text-align:center}
-.precio .n{font-family:var(--display);font-size:52px;font-weight:700;color:#FF8A6E;line-height:1}
-.precio .t{font-size:15px;color:#BBD0D3;margin-top:8px}
-.precio .f{font-size:13px;color:#8FA8AD;margin-top:14px;border-top:1px solid rgba(255,255,255,.12);padding-top:12px}
-.pie{background:var(--arena)}
-.pie .centro{padding-block:26px;font-size:13px;color:var(--tinta-sv);
-             display:flex;flex-wrap:wrap;gap:6px 18px}
-.pie b{color:var(--coral)}
+.wrap{width:100%;max-width:980px;margin:0 auto;
+      padding-left:max(22px,env(safe-area-inset-left,0px));
+      padding-right:max(22px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--titular);letter-spacing:-.02em;text-wrap:balance}
+
+/* ---- Barra de Sora. Va arriba del todo: nadie confunde esto con su web ---- */
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+        background:rgba(7,9,15,.78);border-bottom:1px solid rgba(255,255,255,.06)}
+.topbar .wrap{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;
+              min-height:62px;padding-block:11px}
+.marca{display:flex;align-items:center;gap:10px;font-family:var(--titular);
+       font-weight:700;font-size:1.05rem;color:#fff;white-space:nowrap}
+.punto{width:14px;height:14px;border-radius:50%;flex:0 0 auto;
+       background:linear-gradient(135deg,var(--turquesa),var(--violeta));
+       box-shadow:0 0 14px rgba(45,212,191,.6)}
+.aviso{font-size:.88rem;color:var(--texto-3);min-width:0}
+
+/* ---- Portada ---- */
+header.hero{padding:clamp(44px,8vh,86px) 0 10px}
+.hero .rejilla-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:44px;align-items:center}
+.eyebrow{font-family:var(--titular);font-size:.8rem;font-weight:600;letter-spacing:.12em;
+         text-transform:uppercase;color:var(--turquesa);margin-bottom:16px}
+h1{font-family:var(--titular);font-weight:800;font-size:clamp(1.9rem,5.6vw,3.1rem);
+   line-height:1.12;margin-bottom:20px;
+   background:linear-gradient(100deg,#fff 20%,var(--violeta-claro));
+   -webkit-background-clip:text;background-clip:text;color:transparent}
+.intro{font-size:clamp(1.02rem,2.4vw,1.18rem);color:var(--texto-2);max-width:46ch}
+.botones{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-block;padding:13px 26px;border-radius:999px;font-weight:600;
+     font-size:1rem;text-decoration:none;font-family:var(--titular)}
+.btn-1{background:var(--turquesa);color:#06211d;box-shadow:0 0 26px rgba(45,212,191,.28)}
+.btn-2{border:1px solid var(--linea);color:var(--texto-2)}
+.hueco{aspect-ratio:4/5;border-radius:20px;border:1px solid var(--borde-acento);
+   background:linear-gradient(170deg,rgba(45,212,191,.10),rgba(139,92,246,.12));
+   display:grid;place-items:center;padding:24px;text-align:center}
+.hueco small{color:var(--texto-3);font-size:.86rem;line-height:1.6}
+
+/* ---- Servicios ---- */
+h2.sec{font-family:var(--titular);font-weight:700;font-size:clamp(1.3rem,3.4vw,1.75rem);
+       margin:56px 0 10px;line-height:1.25}
+.sec-sub{color:var(--texto-3);margin-bottom:26px;max-width:56ch}
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:16px}
+.tarjeta{background:var(--tarjeta);border:1px solid var(--borde-acento);border-radius:18px;
+         padding:24px 22px;min-width:0;display:flex;flex-direction:column;gap:9px}
+.tarjeta .num{font-family:var(--titular);font-size:.78rem;font-weight:700;
+              letter-spacing:.12em;color:var(--turquesa)}
+.tarjeta h3{font-family:var(--titular);font-size:1.06rem;font-weight:600;line-height:1.35}
+.tarjeta p{color:var(--texto-3);font-size:.96rem;line-height:1.6}
+
+/* ---- De un vistazo ---- */
+.vistazo{margin:40px 0 0;border-radius:18px;padding:22px 24px;
+         background:var(--tarjeta);border:1px solid var(--borde-acento)}
+.vistazo .tit{font-family:var(--titular);font-size:.78rem;font-weight:700;letter-spacing:.12em;
+              text-transform:uppercase;color:var(--turquesa);margin-bottom:14px}
+.vistazo dl{display:grid;grid-template-columns:minmax(150px,auto) 1fr;gap:11px 20px;margin:0}
+.vistazo dt{font-family:var(--titular);font-weight:600;color:var(--texto-3);font-size:.92rem}
+.vistazo dd{margin:0;color:var(--texto);font-size:.98rem}
+.vistazo dd b{color:var(--turquesa);font-weight:600}
+
+/* ---- Cierre comercial de Sora ---- */
+.cierre{margin:56px 0 0;border-radius:22px;padding:34px 30px;
+        background:linear-gradient(135deg,rgba(139,92,246,.16),rgba(45,212,191,.08));
+        border:1px solid rgba(139,92,246,.35);
+        display:grid;grid-template-columns:1.35fr .65fr;gap:30px;align-items:center}
+.cierre h2{font-family:var(--titular);font-weight:700;font-size:clamp(1.3rem,3.4vw,1.7rem);
+           margin-bottom:12px}
+.cierre p{color:var(--texto-2);font-size:1rem}
+.precio{text-align:center;background:rgba(7,9,15,.5);border:1px solid var(--borde-acento);
+        border-radius:18px;padding:24px 20px}
+.precio .n{font-family:var(--titular);font-weight:800;font-size:3rem;line-height:1;
+           color:var(--turquesa)}
+.precio .t{color:var(--texto-2);font-size:.95rem;margin-top:8px}
+.precio .f{color:var(--texto-3);font-size:.82rem;margin-top:14px;
+           border-top:1px solid rgba(255,255,255,.12);padding-top:12px}
+
+/* ---- Pie ---- */
+.pie{margin-top:52px;border-top:1px solid rgba(255,255,255,.06)}
+.pie .wrap{padding-block:24px;display:flex;flex-wrap:wrap;gap:6px 20px;
+           font-size:.85rem;color:var(--texto-3)}
+.pie b{color:var(--texto-2);font-weight:600}
+
 @media (max-width:760px){
-  .hero .centro,.cierre .centro{grid-template-columns:1fr;gap:34px}
-  .retrato{max-width:300px;margin-inline:auto}
-  .menu{display:none}
+  .hero .rejilla-hero,.cierre{grid-template-columns:1fr;gap:28px}
+  .hueco{max-width:290px;margin-inline:auto}
+  .vistazo dl{grid-template-columns:1fr;gap:3px}
+  .vistazo dt{margin-top:10px}
+  .vistazo dt:first-child{margin-top:0}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
-<header class="sora-top gutter">
-  <div class="centro">
-    <span class="sora-marca">SORA SYSTEMS</span>
-    <span class="sora-aviso">Propuesta de portada para Clínica Trinum. Esta página no es su web: es una idea de cómo podría quedar.</span>
+<div class="topbar">
+  <div class="wrap">
+    <span class="marca"><span class="punto"></span>Sora Systems</span>
+    <span class="aviso">Propuesta para Clínica Trinum. Esta página no es su web: es una idea de cómo podría quedar.</span>
   </div>
-</header>
+</div>
 
-<nav class="nav gutter">
-  <div class="centro">
-    <div class="logo">Clínica <span>Trinum</span></div>
-    <div class="menu"><span>Tratamientos</span><span>El equipo</span><span>Dónde estamos</span><span>Contacto</span></div>
-  </div>
-</nav>
-
-<section class="hero gutter">
-  <div class="centro">
+<header class="hero">
+  <div class="wrap rejilla-hero">
     <div>
       <div class="eyebrow">Alicante · medicina estética</div>
       <h1>Verte bien sin que se note que has hecho nada</h1>
-      <p>Medicina estética facial y corporal, capilar y cirugía. Un plan hecho para ti, no para un catálogo.</p>
+      <p class="intro">Medicina estética facial y corporal, capilar y cirugía. Un plan hecho para ti, no para un catálogo.</p>
       <div class="botones">
         <a class="btn btn-1" href="#">Pedir valoración</a>
         <a class="btn btn-2" href="#">Escribir por WhatsApp</a>
       </div>
     </div>
-    <div class="retrato"><small>Aquí iría una foto<br>de la clínica o del equipo</small></div>
+    <div class="hueco"><small>Aquí iría una foto<br>de la clínica o del equipo</small></div>
   </div>
-</section>
+</header>
 
-<section class="serv gutter">
-  <div class="centro">
-    <h2>Tratamientos</h2>
-    <p>Los cinco que ya ofrecéis en vuestra web.</p>
-    <div class="rejilla">
-      <article class="tarjeta"><div class="num">01</div><h3>Medicina estética facial</h3><p>Arrugas, volumen y luminosidad, paso a paso.</p></article>
-      <article class="tarjeta"><div class="num">02</div><h3>Medicina estética corporal</h3><p>Contorno, firmeza y grasa localizada.</p></article>
-      <article class="tarjeta"><div class="num">03</div><h3>Capilar</h3><p>Tratamiento de la caída con seguimiento.</p></article>
-      <article class="tarjeta"><div class="num">04</div><h3>Cirugía estética</h3><p>Lo que no se resuelve sin quirófano, con criterio médico.</p></article>
-      <article class="tarjeta"><div class="num">05</div><h3>Mesoterapia facial</h3><p>Hidratación profunda en sesiones cortas.</p></article></div>
+<section class="wrap">
+  <h2 class="sec">Tratamientos</h2>
+  <p class="sec-sub">Los cinco que ya ofrecéis en vuestra web.</p>
+  <div class="tarjetas">
+    <article class="tarjeta"><div class="num">01</div><h3>Medicina estética facial</h3><p>Arrugas, volumen y luminosidad, paso a paso.</p></article>
+    <article class="tarjeta"><div class="num">02</div><h3>Medicina estética corporal</h3><p>Contorno, firmeza y grasa localizada.</p></article>
+    <article class="tarjeta"><div class="num">03</div><h3>Capilar</h3><p>Tratamiento de la caída con seguimiento.</p></article>
+    <article class="tarjeta"><div class="num">04</div><h3>Cirugía estética</h3><p>Lo que no se resuelve sin quirófano, con criterio médico.</p></article>
+    <article class="tarjeta"><div class="num">05</div><h3>Mesoterapia facial</h3><p>Hidratación profunda en sesiones cortas.</p></article></div>
+
+  <div class="vistazo">
+    <div class="tit">De un vistazo</div>
+    <dl>
+      <dt>Dónde</dt><dd><b>Alicante</b> · Clínica propia</dd>
+      <dt>Valoración</dt><dd><b>Sin compromiso</b> · Plan y precio antes de decidir</dd>
+      <dt>Cita</dt><dd><b>Por WhatsApp</b> · Respuesta el mismo día</dd></dl>
   </div>
-</section>
 
-<section class="datos gutter">
-  <div class="centro">
-    <div class="dato"><div class="k">Dónde</div><div class="v">Alicante</div><div class="s">Clínica propia</div></div>
-    <div class="dato"><div class="k">Valoración</div><div class="v">Sin compromiso</div><div class="s">Plan y precio antes de decidir</div></div>
-    <div class="dato"><div class="k">Cita</div><div class="v">Por WhatsApp</div><div class="s">Respuesta el mismo día</div></div></div>
-</section>
-
-<section class="cierre gutter">
-  <div class="centro">
+  <div class="cierre">
     <div>
       <h2>¿Os gusta cómo queda?</h2>
-      <p>Esto es una propuesta, hecha con vuestro nombre y vuestros servicios. Si os convence, la dejamos funcionando tal cual, con vuestras fotos y vuestros textos definitivos.</p>
-      <p style="margin-top:14px">Respondéis al correo y lo hablamos. Si no es el momento, decídmelo y no os vuelvo a escribir.</p>
+      <p>Está hecha con vuestro nombre y vuestros servicios, no es una plantilla.
+         Si os convence, la dejamos funcionando tal cual, con vuestras fotos y
+         vuestros textos definitivos.</p>
+      <p style="margin-top:12px">Respondéis al correo y lo hablamos. Si no es el
+         momento, decídmelo y no os vuelvo a escribir.</p>
     </div>
     <div class="precio">
       <div class="n">200&nbsp;€</div>
@@ -156,8 +173,8 @@ a{color:inherit}
   </div>
 </section>
 
-<footer class="pie gutter">
-  <div class="centro">
+<footer class="pie">
+  <div class="wrap">
     <span><b>Sora Systems</b> · sorasystems.es</span>
     <span>Propuesta de diseño para Clínica Trinum · octubre de 2026</span>
   </div>

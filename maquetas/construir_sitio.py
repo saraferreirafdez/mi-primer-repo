@@ -21,7 +21,10 @@ propuestas.sorasystems.es/clinica-miramar y no ...­/maqueta_miramar.html
 import io, os, re, sys
 
 ORIGEN = os.path.dirname(os.path.abspath(__file__))
-DESTINO = sys.argv[1] if len(sys.argv) > 1 else "/home/user/mi-primer-repo/sitio"
+# Las propuestas viven dentro de la web de Sora, que ya esta en Netlify y ya
+# responde en sorasystems.es. Nada de alojamiento nuevo, ni subdominio, ni DNS,
+# ni permisos que tocar: se sube a master y Netlify la publica.
+DESTINO = sys.argv[1] if len(sys.argv) > 1 else "/home/user/sorasystems-web/propuestas"
 
 # (fichero de origen, slug de la direccion, nombre del negocio tal y como se
 #  escribe con acentos, una palabra que TIENE que aparecer en el fragmento)
@@ -101,8 +104,14 @@ for fichero, slug, negocio, palabra in PAGINAS:
     assert pagina.count(u"<title>") == 1, slug
     assert pagina.count(u"<body>") == 1 and pagina.count(u"</body>") == 1, slug
     assert negocio.split()[-1] in pagina, slug          # el nombre con acentos sobrevive
-    assert u"SORA SYSTEMS" in pagina, slug              # la franja que avisa de que no es su web
+    assert u"Sora Systems" in pagina, slug              # la barra que avisa de que no es su web
+    assert u"no es su web" in pagina, slug
     assert u"200" in pagina, slug                       # el precio sigue ahi
+    # La identidad tiene que ser la de sorasystems.es, no la primera que hice.
+    assert u"#2dd4bf" in pagina and u"#8b5cf6" in pagina, (slug, "falta la paleta")
+    assert u"#07090f" in pagina, (slug, "falta el fondo de la marca")
+    assert u"FF6B4A" not in pagina.upper(), (slug, "queda coral de la version vieja")
+    assert u"Fraunces" not in pagina, (slug, "queda tipografia vieja")
 
     carpeta = os.path.join(DESTINO, slug)
     if not os.path.isdir(carpeta):
@@ -120,27 +129,43 @@ RAIZ = u"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Sora Systems · propuestas</title>
+<title>Propuestas · Sora Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500&display=swap">
 <style>
-  :root{--arena:#FDF8F4;--tinta:#16323A;--sv:#4A6670;--coral:#FF6B4A;--turquesa:#0E9488}
-  @media (prefers-color-scheme:dark){:root{--arena:#121C20;--tinta:#EDF4F2;--sv:#9DB4B9;--coral:#FF8A6E;--turquesa:#3DC2B3}}
-  *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--arena);
-       color:var(--tinta);font:17px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-       padding:0 16px}
-  .caja{max-width:30rem;text-align:center}
-  .marca{font-weight:800;letter-spacing:.14em;font-size:14px;color:var(--coral)}
-  h1{font-size:clamp(26px,5vw,36px);line-height:1.15;margin:16px 0 14px;letter-spacing:-.01em}
-  p{color:var(--sv);margin:0 0 26px}
-  a{display:inline-block;padding:13px 26px;border-radius:999px;background:var(--turquesa);
-    color:#fff;text-decoration:none;font-weight:700}
+  /* Misma identidad que sorasystems.es: fondo casi negro, halos turquesa y
+     violeta, Sora para el titular, Inter para el texto. */
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{min-height:100vh;display:grid;place-items:center;padding:0 22px;
+       background:#07090f;color:#eef1ff;line-height:1.7;
+       font-family:'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;
+       -webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;background:
+    radial-gradient(680px circle at 15% 0%,rgba(45,212,191,.12),transparent 55%),
+    radial-gradient(760px circle at 90% 12%,rgba(139,92,246,.16),transparent 55%),
+    #07090f}
+  .caja{max-width:32rem;text-align:center}
+  .marca{display:inline-flex;align-items:center;gap:10px;font-family:'Sora',sans-serif;
+         font-weight:700;font-size:1.05rem;color:#fff}
+  .punto{width:14px;height:14px;border-radius:50%;
+         background:linear-gradient(135deg,#2dd4bf,#8b5cf6);
+         box-shadow:0 0 14px rgba(45,212,191,.6)}
+  h1{font-family:'Sora',sans-serif;font-weight:800;letter-spacing:-.02em;
+     font-size:clamp(1.6rem,5vw,2.3rem);line-height:1.15;margin:20px 0 14px;
+     background:linear-gradient(100deg,#fff 20%,#cbb9ff);
+     -webkit-background-clip:text;background-clip:text;color:transparent}
+  p{color:#cdd3f0;margin:0 0 28px}
+  a{display:inline-block;padding:13px 26px;border-radius:999px;background:#2dd4bf;
+    color:#06211d;text-decoration:none;font-weight:600;font-family:'Sora',sans-serif;
+    box-shadow:0 0 26px rgba(45,212,191,.28)}
 </style>
 </head>
 <body>
   <div class="caja">
-    <div class="marca">SORA SYSTEMS</div>
+    <div class="marca"><span class="punto"></span>Sora Systems</div>
     <h1>Aquí dejo las propuestas de diseño</h1>
-    <p>Cada propuesta tiene su propia dirección y se la envío al negocio
+    <p>Cada propuesta tiene su propia dirección y se la envío solo al negocio
        para el que la he preparado. Si has llegado aquí por el enlace de un
        correo mío, vuelve a pincharlo: te lleva a la tuya.</p>
     <a href="https://sorasystems.es">Ir a sorasystems.es</a>
@@ -149,10 +174,6 @@ RAIZ = u"""<!doctype html>
 </html>
 """
 io.open(os.path.join(DESTINO, "index.html"), "w", encoding="utf-8").write(RAIZ)
-
-# Sin esto GitHub Pages pasa las paginas por Jekyll, que se come lo que empieza
-# por guion bajo y a veces reescribe cosas. Son HTML planos: que las sirva tal cual.
-io.open(os.path.join(DESTINO, ".nojekyll"), "w", encoding="utf-8").write(u"")
 
 print("paginas:", len(hechas))
 for slug, negocio, n in hechas:
