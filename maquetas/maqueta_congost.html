@@ -57,10 +57,34 @@ h1{font-family:var(--titular);font-weight:800;font-size:clamp(1.9rem,5.6vw,3.1re
      font-size:1rem;text-decoration:none;font-family:var(--titular)}
 .btn-1{background:var(--turquesa);color:#06211d;box-shadow:0 0 26px rgba(45,212,191,.28)}
 .btn-2{border:1px solid var(--linea);color:var(--texto-2)}
+/* La columna derecha de la portada. Antes era un recuadro vacio que ponia
+   "aqui iria una foto": lo primero que veia el dueño, a la altura del boton,
+   y parecia a medio hacer (lo cazo CoWork mirandolo en un navegador de
+   verdad). Ahora es una web en miniatura dibujada con CSS. Sin imagenes: no
+   hay foto que no sea nuestra, pesa cero y se entiende de un vistazo lo que
+   vendemos. La nota de la foto se queda debajo, pequeña y honesta. */
 .hueco{aspect-ratio:4/5;border-radius:20px;border:1px solid var(--borde-acento);
    background:linear-gradient(170deg,rgba(45,212,191,.10),rgba(139,92,246,.12));
-   display:grid;place-items:center;padding:24px;text-align:center}
-.hueco small{color:var(--texto-3);font-size:.86rem;line-height:1.6}
+   display:flex;flex-direction:column;justify-content:center;gap:14px;
+   padding:22px;text-align:center}
+.mini{background:rgba(7,9,15,.55);border:1px solid rgba(255,255,255,.10);
+   border-radius:12px;overflow:hidden;text-align:left}
+.mini-barra{display:flex;gap:6px;padding:10px 12px;
+   border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.mini-barra i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.18)}
+.mini-barra i:first-child{background:var(--turquesa);opacity:.75}
+.mini-cuerpo{padding:16px 14px 18px;display:flex;flex-direction:column;gap:9px}
+.l{height:9px;border-radius:5px;background:rgba(255,255,255,.14)}
+.l.ancha{width:82%;height:13px;
+   background:linear-gradient(90deg,rgba(255,255,255,.34),rgba(203,185,255,.26))}
+.l.media{width:64%}
+.l.corta{width:45%}
+.mini-btn{margin-top:4px;width:52%;height:22px;border-radius:999px;
+   background:var(--turquesa);opacity:.9}
+.mini-fila{display:flex;gap:8px;margin-top:10px}
+.mini-fila b{flex:1;height:34px;border-radius:8px;
+   background:rgba(255,255,255,.07);border:1px solid rgba(45,212,191,.22)}
+.hueco small{color:var(--texto-3);font-size:.82rem;line-height:1.55}
 
 /* ---- Servicios ---- */
 h2.sec{font-family:var(--titular);font-weight:700;font-size:clamp(1.3rem,3.4vw,1.75rem);
@@ -134,7 +158,19 @@ h2.sec{font-family:var(--titular);font-weight:700;font-size:clamp(1.3rem,3.4vw,1
         <a class="btn btn-2" href="#">Llamar al despacho</a>
       </div>
     </div>
-    <div class="hueco"><small>Aquí iría una foto<br>del despacho o del equipo</small></div>
+    <div class="hueco">
+      <div class="mini" aria-hidden="true">
+        <div class="mini-barra"><i></i><i></i><i></i></div>
+        <div class="mini-cuerpo">
+          <div class="l ancha"></div>
+          <div class="l media"></div>
+          <div class="l corta"></div>
+          <div class="mini-btn"></div>
+          <div class="mini-fila"><b></b><b></b><b></b></div>
+        </div>
+      </div>
+      <small>Aquí iría una foto<br>del despacho o del equipo</small>
+    </div>
   </div>
 </header>
 
