@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo · Sara Ferreira · IA para Inmobiliarias</title>
+<!-- Embed: este archivo puede usarse como iframe en cualquier web -->
+<meta name="robots" content="noindex">
+<!-- Permitir iframe desde cualquier origen -->
+<meta http-equiv="X-Frame-Options" content="ALLOWALL">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,500;1,700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold:      #c9a24b;
+  --gold-light:#e8c97a;
+  --gold-dim:  rgba(201,162,75,.13);
+  --green:     #2ec27e;
+  --green-dim: rgba(46,194,126,.10);
+  --ink:       #07090f;
+  --ink2:      #0d1018;
+  --surface:   rgba(255,255,255,.04);
+  --border:    rgba(255,255,255,.08);
+  --muted:     rgba(255,255,255,.38);
+  --text:      rgba(255,255,255,.88);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+html, body { height:100%; background:var(--ink); font-family:'Inter',sans-serif; color:var(--text); overflow-x:hidden; overflow-y:hidden }
+
+/* iframe reset — ocupa exactamente el espacio que le da el contenedor */
+html { font-size:16px }
+
+body::after {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── PAGE ── */
+.page {
+  position:relative; z-index:1;
+  min-height:100vh;
+  display:grid;
+  grid-template-columns: 1fr 500px;
+}
+
+/* ══ LEFT ══ */
+.left {
+  display:flex; flex-direction:column; justify-content:center;
+  padding:90px 72px;
+  background:
+    radial-gradient(ellipse 700px 500px at -10% 50%, rgba(201,162,75,.07), transparent 60%),
+    radial-gradient(ellipse 400px 350px at 110% 10%, rgba(46,194,126,.05), transparent 55%),
+    var(--ink);
+  position:relative; overflow:hidden;
+}
+.left::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(201,162,75,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,162,75,.04) 1px, transparent 1px);
+  background-size:76px 76px;
+  mask-image:radial-gradient(ellipse 80% 80% at 25% 55%, black, transparent);
+}
+
+.brand {
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px; font-weight:500; letter-spacing:.1em;
+  color:rgba(255,255,255,.55); margin-bottom:60px;
+  opacity:0; animation:fadeUp .6s .1s forwards;
+}
+.brand em { font-style:normal; color:var(--gold) }
+
+.eyebrow {
+  font-size:10px; letter-spacing:.36em; text-transform:uppercase;
+  color:var(--gold); font-weight:500; margin-bottom:20px;
+  opacity:0; animation:fadeUp .6s .25s forwards;
+}
+.hero-title {
+  font-family:'Cormorant Garamond',serif; font-weight:300;
+  font-size:clamp(48px,5.5vw,78px); line-height:.93; letter-spacing:-.01em;
+  opacity:0; animation:fadeUp .7s .4s forwards;
+}
+.hero-title em { font-style:italic; color:var(--gold); display:block; margin-top:6px }
+
+.hero-sub {
+  margin-top:28px; max-width:400px;
+  font-size:15px; color:var(--muted); font-weight:300; line-height:1.75;
+  opacity:0; animation:fadeUp .6s .55s forwards;
+}
+
+/* pills */
+.pills {
+  margin-top:40px; display:flex; gap:10px; flex-wrap:wrap;
+  opacity:0; animation:fadeUp .6s .7s forwards;
+}
+.pill {
+  display:inline-flex; align-items:center; gap:7px;
+  border:1px solid var(--border); border-radius:999px;
+  padding:8px 16px; font-size:12px; color:var(--muted);
+}
+.pill-dot { width:6px; height:6px; border-radius:50%; flex:none }
+.pill-dot.green { background:var(--green); animation:blink 2s infinite }
+.pill-dot.gold  { background:var(--gold) }
+
+/* stats */
+.stats {
+  margin-top:60px; display:flex; gap:0;
+  border-top:1px solid var(--border);
+  opacity:0; animation:fadeUp .6s .85s forwards;
+}
+.stat { flex:1; padding:24px 0 0 }
+.stat + .stat { padding-left:32px; border-left:1px solid var(--border) }
+.stat-n {
+  font-family:'Cormorant Garamond',serif; font-weight:300;
+  font-size:46px; color:var(--gold); line-height:1;
+}
+.stat-l {
+  font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); margin-top:6px;
+}
+
+/* cta */
+.left-cta {
+  margin-top:56px;
+  opacity:0; animation:fadeUp .6s 1s forwards;
+}
+.btn-cta {
+  display:inline-flex; align-items:center; gap:10px;
+  background:linear-gradient(135deg,var(--gold),#9e7a29);
+  color:#0e0a00; font-weight:600; font-size:13px; letter-spacing:.08em;
+  padding:16px 36px; text-decoration:none;
+  transition:transform .2s, box-shadow .2s;
+  box-shadow:0 8px 32px rgba(201,162,75,.2);
+}
+.btn-cta:hover { transform:translateY(-2px); box-shadow:0 16px 44px rgba(201,162,75,.35) }
+
+/* ══ RIGHT – CHAT ══ */
+.right {
+  background:var(--ink2);
+  border-left:1px solid var(--border);
+  display:flex; flex-direction:column;
+  position:relative; overflow:hidden;
+}
+.right::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 450px 350px at 50% 0%, rgba(46,194,126,.06), transparent 65%);
+}
+
+/* header */
+.chat-header {
+  padding:20px 26px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:14px;
+  flex:none; position:relative; z-index:2;
+}
+.ai-ava {
+  width:44px; height:44px; border-radius:50%; flex:none;
+  background:linear-gradient(135deg,#3fd586,#177a44);
+  display:grid; place-items:center; font-size:20px;
+  box-shadow:0 0 28px rgba(63,213,134,.2);
+}
+.ai-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:17px; font-weight:500; color:rgba(255,255,255,.9); letter-spacing:.03em;
+}
+.ai-status {
+  font-size:11px; color:var(--green); margin-top:3px;
+  display:flex; align-items:center; gap:6px;
+}
+.status-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:blink 2s infinite }
+.live-badge {
+  margin-left:auto; font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+  border:1px solid rgba(46,194,126,.25); color:rgba(46,194,126,.6);
+  padding:5px 12px; border-radius:999px;
+}
+
+/* messages */
+.messages {
+  flex:1; overflow-y:auto; padding:26px 22px;
+  display:flex; flex-direction:column; gap:14px;
+  position:relative; z-index:1; scroll-behavior:smooth;
+}
+.messages::-webkit-scrollbar { width:3px }
+.messages::-webkit-scrollbar-track { background:transparent }
+.messages::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); border-radius:3px }
+
+/* welcome */
+.welcome { text-align:center; padding:16px 0 6px }
+.welcome-icon {
+  width:52px; height:52px; border-radius:50%; margin:0 auto 14px;
+  background:linear-gradient(135deg,#3fd586,#177a44);
+  display:grid; place-items:center; font-size:24px;
+  box-shadow:0 0 30px rgba(63,213,134,.2);
+}
+.welcome h3 { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:500; color:rgba(255,255,255,.85); margin-bottom:7px }
+.welcome p  { font-size:12px; color:var(--muted); line-height:1.65; max-width:280px; margin:0 auto }
+
+/* messages */
+.msg { display:flex; gap:10px; align-items:flex-end; animation:msgIn .32s ease forwards }
+.msg.user { flex-direction:row-reverse }
+@keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+.m-ava {
+  width:30px; height:30px; border-radius:50%; flex:none;
+  background:linear-gradient(135deg,#3fd586,#177a44);
+  display:grid; place-items:center; font-size:14px;
+  box-shadow:0 0 14px rgba(63,213,134,.15);
+}
+.m-ava.u {
+  background:linear-gradient(135deg,var(--gold),#9e7a29);
+  font-size:11px; font-weight:700; color:#0e0a00;
+  box-shadow:0 0 14px rgba(201,162,75,.15);
+}
+
+.bubble {
+  max-width:80%; padding:12px 16px; font-size:13.5px; line-height:1.6; border-radius:18px;
+}
+.bubble.ai   { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09); color:rgba(255,255,255,.8); border-bottom-left-radius:4px }
+.bubble.user { background:rgba(201,162,75,.1); border:1px solid rgba(201,162,75,.2); color:rgba(255,255,255,.8); border-bottom-right-radius:4px }
+
+/* typing */
+.typing-wrap { display:flex; gap:10px; align-items:flex-end }
+.typing-bub  { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:18px; border-bottom-left-radius:4px; padding:14px 18px; display:flex; gap:5px; align-items:center }
+.td { width:6px; height:6px; border-radius:50%; background:rgba(46,194,126,.7); animation:tdot 1.3s infinite }
+.td:nth-child(2){animation-delay:.22s}
+.td:nth-child(3){animation-delay:.44s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+
+/* lead bar */
+.lead-bar {
+  margin:0 22px 4px; padding:13px 17px;
+  background:rgba(46,194,126,.07); border:1px solid rgba(46,194,126,.2);
+  border-radius:14px; display:none; align-items:center; gap:12px;
+  position:relative; z-index:1; animation:msgIn .4s forwards;
+}
+.lead-bar.show { display:flex }
+.lb-t { font-size:13px; font-weight:500; color:#c8ffe8 }
+.lb-s { font-size:11px; color:var(--muted); margin-top:2px }
+.lb-tag { margin-left:auto; font-size:10px; letter-spacing:.12em; text-transform:uppercase; border:1px solid rgba(46,194,126,.3); color:var(--green); padding:4px 12px; border-radius:999px }
+
+/* quick replies */
+.quick-wrap {
+  padding:0 22px 14px; display:flex; gap:8px; flex-wrap:wrap;
+  flex:none; position:relative; z-index:1;
+}
+.qr {
+  background:transparent; border:1px solid var(--border);
+  color:var(--muted); font-size:12px; padding:8px 14px; border-radius:999px;
+  cursor:pointer; font-family:'Inter',sans-serif;
+  transition:border-color .2s, color .2s, background .2s;
+}
+.qr:hover { border-color:rgba(201,162,75,.4); color:var(--gold); background:var(--gold-dim) }
+
+/* input */
+.input-area {
+  padding:16px 22px; border-top:1px solid var(--border);
+  display:flex; gap:12px; align-items:flex-end;
+  flex:none; position:relative; z-index:2;
+}
+.input-wrap {
+  flex:1; background:rgba(255,255,255,.05); border:1px solid var(--border);
+  border-radius:14px; padding:11px 16px; transition:border-color .2s;
+}
+.input-wrap:focus-within { border-color:rgba(201,162,75,.4) }
+#userInput {
+  width:100%; background:transparent; border:none; outline:none;
+  color:var(--text); font-size:13.5px; font-family:'Inter',sans-serif;
+  resize:none; line-height:1.5; max-height:90px; overflow-y:auto;
+}
+#userInput::placeholder { color:rgba(255,255,255,.2); font-style:italic }
+.send-btn {
+  width:44px; height:44px; flex:none;
+  background:linear-gradient(135deg,var(--gold),#9e7a29);
+  border:none; border-radius:12px; cursor:pointer;
+  display:grid; place-items:center;
+  box-shadow:0 4px 18px rgba(201,162,75,.25);
+  transition:transform .2s, box-shadow .2s;
+}
+.send-btn:hover { transform:translateY(-1px); box-shadow:0 8px 28px rgba(201,162,75,.4) }
+.send-btn svg { width:17px; height:17px; fill:#0e0a00 }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+@keyframes blink{50%{opacity:.2}}
+
+/* ── Iframe friendly: altura exacta ── */
+.page { min-height:100vh; height:100vh }
+.right { height:100% }
+
+@media(max-width:880px){
+  .page { grid-template-columns:1fr; grid-template-rows:1fr 1fr; height:auto; min-height:100vh }
+  .left { padding:52px 28px 44px }
+  .right { min-height:520px }
+  .stats { gap:0 }
+}
+@media(max-width:480px){
+  .left { padding:40px 20px 36px }
+  .hero-title { font-size:40px }
+  .stat-n { font-size:36px }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ LEFT ══ -->
+  <div class="left">
+    <div class="brand">Sara <em>Ferreira</em></div>
+    <p class="eyebrow">Captación 24 / 7 · IA para Inmobiliarias</p>
+    <h1 class="hero-title">
+      Tu asistente<br>siempre activo.
+      <em>Nunca pierdas<br>un lead.</em>
+    </h1>
+    <p class="hero-sub">Responde cada consulta en segundos, cualifica al cliente y agenda la visita — mientras tú cierras ventas.</p>
+
+    <div class="pills">
+      <div class="pill"><span class="pill-dot green"></span>Activo 24 / 7</div>
+      <div class="pill"><span class="pill-dot gold"></span>WhatsApp · Email · Web</div>
+      <div class="pill"><span class="pill-dot gold"></span>CRM integrado</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-n">8s</div><div class="stat-l">Respuesta media</div></div>
+      <div class="stat"><div class="stat-n">×3</div><div class="stat-l">Más visitas</div></div>
+      <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Leads atendidos</div></div>
+    </div>
+
+    <div class="left-cta">
+      <a href="#" class="btn-cta">Hablar con Sara →</a>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT – CHAT ══ -->
+  <div class="right">
+    <div class="chat-header">
+      <div class="ai-ava">🤖</div>
+      <div>
+        <div class="ai-name">Asistente · Sara Ferreira</div>
+        <div class="ai-status"><span class="status-dot"></span>En línea · responde al instante</div>
+      </div>
+      <div class="live-badge">Demo en vivo</div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <div class="welcome-icon">🏡</div>
+        <h3>Hola, soy tu asistente inmobiliario</h3>
+        <p>Escríbeme como lo haría un cliente real y observa cómo trabajo.</p>
+      </div>
+    </div>
+
+    <div class="lead-bar" id="leadBar">
+      <span style="font-size:18px">✓</span>
+      <div>
+        <div class="lb-t">Lead capturado</div>
+        <div class="lb-s">Datos guardados · seguimiento activado en CRM</div>
+      </div>
+      <div class="lb-tag">En CRM</div>
+    </div>
+
+    <div class="quick-wrap" id="quickWrap">
+      <button class="qr" onclick="sendQuick(this)">¿Está disponible?</button>
+      <button class="qr" onclick="sendQuick(this)">¿Cuál es el precio?</button>
+      <button class="qr" onclick="sendQuick(this)">Quiero una visita</button>
+      <button class="qr" onclick="sendQuick(this)">¿Cuántos m² tiene?</button>
+    </div>
+
+    <div class="input-area">
+      <div class="input-wrap">
+        <textarea id="userInput" rows="1" placeholder="Escribe tu consulta…" autocomplete="off"></textarea>
+      </div>
+      <button class="send-btn" onclick="handleSend()" title="Enviar">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+<script>
+const msgs    = document.getElementById('messages');
+const input   = document.getElementById('userInput');
+const qwrap   = document.getElementById('quickWrap');
+const leadBar = document.getElementById('leadBar');
+let busy = false, userName = null;
+
+const KB = [
+  { re:/hola|buenas|buenos|hey\b/i, fn:()=>`¡Hola! 👋 Soy el asistente virtual de Sara Ferreira. Estoy aquí para resolver cualquier consulta sobre propiedades — disponibilidad, precios, visitas… ¿En qué te puedo ayudar?` },
+  { re:/disponible|libre|sigue|todavía|vendido/i, fn:()=>`Sí, la propiedad sigue disponible 🏡\n\n¿Te gustaría concertar una visita o prefieres que te enviemos más detalles — fotos, plano y certificado energético?` },
+  { re:/precio|cuesta|vale|cuánto|euros?/i, fn:()=>`El precio de venta es **289.000 €**, negociable.\nIncluye plaza de garaje y trastero.\n\n¿Quieres que te orientemos sobre financiación? Trabajamos con varias entidades y es sin compromiso.` },
+  { re:/visita|ver|cita|quedar|enseñar|mostrar/i, fn:()=>`Perfecto, organizamos la visita sin problema 📅\n\nTenemos disponibilidad:\n— Sábado · 10:00 a 13:00\n— Domingo · 11:00 a 14:00\n— Lunes a viernes · desde las 17:00\n\n¿Cuál te viene mejor?` },
+  { re:/sábado|sabado|domingo|lunes|martes|miércoles|jueves|viernes|mañana|tarde|semana/i, fn:()=>`Anotado. Para confirmar la reserva, ¿me indicas tu nombre y un teléfono de contacto?` },
+  { re:/me llamo|soy\s+[A-Za-záéíóúÁÉÍÓÚ]+|mi nombre/i, fn:(t)=>{ const m=t.match(/(?:me llamo|soy)\s+([A-Za-záéíóúÁÉÍÓÚ]+)/i); if(m) userName=m[1]; return `Encantada${userName?`, ${userName}`:''} 🤝 ¿Y a qué número te llamamos para confirmar?` }},
+  { re:/\b6\d{8}\b|\b\d{3}[\s.-]\d{3}[\s.-]\d{3}\b/, fn:()=>{ setTimeout(()=>{ leadBar.classList.add('show'); setTimeout(()=>leadBar.classList.remove('show'),7000) },600); return `¡Perfecto${userName?`, ${userName}`:''}! 🎉 Visita reservada y tus datos guardados en el sistema.\nSara o su equipo te llamarán en menos de una hora para confirmar todos los detalles.\n\n¿Necesitas algo más?` }},
+  { re:/metros?|m²|superficie|tamaño/i, fn:()=>`La vivienda tiene **95 m² útiles** (110 m² construidos):\n\n— Salón-comedor · 28 m²\n— Cocina equipada · 12 m²\n— 3 dormitorios (suite principal)\n— 2 baños completos\n— Terraza · 14 m²\n\n¿Quieres que te enviemos el plano?` },
+  { re:/plano|foto|galería/i, fn:()=>`Claro, te enviamos la galería completa y el plano ahora mismo 📸\n¿Prefieres recibirlo por WhatsApp o email?` },
+  { re:/whatsapp|email|correo/i, fn:()=>`Perfecto. Dame el contacto y te lo enviamos al momento 📩` },
+  { re:/hipoteca|financiación|banco|préstamo/i, fn:()=>`Para esta propiedad, una hipoteca a 30 años podría quedar en torno a **980 € / mes** (con el 20% de entrada).\n\n¿Quieres que te pongamos en contacto con nuestro asesor financiero? Es gratuito y sin compromiso.` },
+  { re:/zona|barrio|ubicación|dónde/i, fn:()=>`La propiedad está en el **barrio de Salamanca, Madrid** 📍\nMetro a 3 minutos, colegios bilingües, comercios y restaurantes a pie de calle.\n\n¿Quieres que te enviemos la ubicación exacta?` },
+  { re:/garaje|parking|plaza/i, fn:()=>`Sí, incluye **plaza de garaje privada** en el mismo edificio, con acceso directo desde el ascensor, más trastero de 8 m². Todo incluido en el precio.` },
+  { re:/gracias|perfecto|genial|entendido|vale\b|ok\b/i, fn:()=>`De nada, para eso estamos 🙏 Cualquier otra consulta, aquí me tienes.` },
+  { re:/no|nada más|ya está/i, fn:()=>`Perfecto. Quedamos a tu disposición cuando lo necesites. ¡Que tengas un excelente día!` },
+];
+
+function getReply(t) {
+  for (const r of KB) if (r.re.test(t)) return r.fn(t);
+  return `Entendido. Déjame consultarlo con el equipo y te confirmo en breve. Si prefieres hablar directamente, dime tu nombre y teléfono y Sara te llama hoy mismo.`;
+}
+
+function appendMsg(role, text) {
+  const wrap = document.createElement('div'); wrap.className='msg '+role;
+  const ava  = document.createElement('div'); ava.className=role==='ai'?'m-ava':'m-ava u'; ava.textContent=role==='ai'?'🤖':'👤';
+  const bub  = document.createElement('div'); bub.className='bubble '+role;
+  bub.innerHTML=text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  wrap.appendChild(ava); wrap.appendChild(bub);
+  msgs.appendChild(wrap); msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping() {
+  const w=document.createElement('div'); w.className='typing-wrap'; w.id='tw';
+  const a=document.createElement('div'); a.className='m-ava'; a.textContent='🤖';
+  const b=document.createElement('div'); b.className='typing-bub';
+  b.innerHTML='<span class="td"></span><span class="td"></span><span class="td"></span>';
+  w.appendChild(a); w.appendChild(b); msgs.appendChild(w); msgs.scrollTop=msgs.scrollHeight;
+  return w;
+}
+
+function send(text) {
+  text=text.trim(); if(!text||busy) return; busy=true;
+  qwrap.style.display='none';
+  appendMsg('user',text);
+  const tw=showTyping();
+  setTimeout(()=>{ tw.remove(); appendMsg('ai',getReply(text)); busy=false; }, 850+Math.random()*650);
+}
+
+function handleSend(){ send(input.value); input.value=''; input.style.height='auto' }
+function sendQuick(btn){ send(btn.textContent) }
+
+input.addEventListener('input',()=>{ input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,90)+'px' });
+input.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend()} });
+
+setTimeout(()=>appendMsg('ai','¡Hola! Soy el asistente de Sara Ferreira. ¿En qué puedo ayudarte hoy?'),1100);
+</script>
+</body>
+</html>
