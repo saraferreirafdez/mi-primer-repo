@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Clínica Dental Teresa González · propuesta de Sora Systems</title>
+<meta name="description" content="Propuesta de portada preparada por Sora Systems. Esta pagina no es la web de Clínica Dental Teresa González.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&display=swap">
+
+<style>
+/* Maqueta de portada. Franja de Sora arriba y abajo, contenido del negocio en medio.
+   Luz mediterranea: arena calida, tinta verde-azulada profunda, coral y turquesa de Sora. */
+:root{
+  --arena:#FDF8F4; --arena-2:#F6E7DC; --tinta:#16323A; --tinta-sv:#4A6670;
+  --coral:#FF6B4A; --turquesa:#0E9488; --linea:#E8D8CC; --tarjeta:#FFFFFF;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --texto:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --arena:#121C20; --arena-2:#1B2A2F; --tinta:#EDF4F2; --tinta-sv:#9DB4B9;
+  --coral:#FF8A6E; --turquesa:#3DC2B3; --linea:#28393F; --tarjeta:#1B2A2F;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --arena:#121C20; --arena-2:#1B2A2F; --tinta:#EDF4F2; --tinta-sv:#9DB4B9;
+  --coral:#FF8A6E; --turquesa:#3DC2B3; --linea:#28393F; --tarjeta:#1B2A2F;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--arena);color:var(--tinta);font-family:var(--texto);
+     font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));
+        padding-right:max(16px,env(safe-area-inset-right,0px))}
+.centro{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;font-weight:600}
+a{color:inherit}
+.sora-top{background:var(--tinta);color:#FDF8F4}
+.sora-top .centro{padding-block:14px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline}
+.sora-marca{font-weight:700;letter-spacing:.14em;font-size:13px;color:#FF8A6E}
+.sora-aviso{font-size:14px;color:#BBD0D3;min-width:0}
+.nav .centro{padding-block:22px;display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+.logo{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-.01em}
+.logo span{color:var(--turquesa)}
+.menu{display:flex;flex-wrap:wrap;gap:22px;margin-left:auto;font-size:15px;color:var(--tinta-sv)}
+.hero{position:relative;overflow:hidden;background:
+   radial-gradient(70% 90% at 82% 18%, color-mix(in srgb,var(--turquesa) 20%,transparent) 0%, transparent 62%),
+   radial-gradient(58% 80% at 12% 86%, color-mix(in srgb,var(--coral) 18%,transparent) 0%, transparent 60%),
+   var(--arena)}
+.hero .centro{padding-block:68px 60px;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+.eyebrow{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--turquesa);font-weight:700}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.04;letter-spacing:-.02em;margin:14px 0 18px}
+.hero p{font-size:clamp(17px,2.2vw,20px);color:var(--tinta-sv);margin:0 0 30px;max-width:46ch}
+.botones{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-block;padding:14px 26px;border-radius:999px;font-weight:700;font-size:16px;
+     text-decoration:none;border:2px solid transparent}
+.btn-1{background:var(--coral);color:#fff}
+.btn-2{border-color:var(--linea);color:var(--tinta)}
+.retrato{aspect-ratio:4/5;max-width:100%;border-radius:200px 200px 24px 24px;
+  background:linear-gradient(170deg,color-mix(in srgb,var(--turquesa) 32%,var(--arena-2)),var(--arena-2));
+  border:1px solid var(--linea);display:grid;place-items:center;padding:24px;text-align:center}
+.retrato small{color:var(--tinta-sv);font-size:13px;line-height:1.5}
+.serv{background:var(--arena-2)}
+.serv .centro{padding-block:62px}
+.serv h2{font-size:clamp(26px,4vw,36px);letter-spacing:-.01em}
+.serv>.centro>p{color:var(--tinta-sv);margin:10px 0 34px;max-width:52ch}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:18px}
+.tarjeta{background:var(--tarjeta);border:1px solid var(--linea);border-radius:16px;
+         padding:26px 24px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.tarjeta .num{font-family:var(--display);font-size:15px;color:var(--coral);font-weight:700}
+.tarjeta h3{font-size:19px;line-height:1.3}
+.tarjeta p{margin:0;font-size:15px;color:var(--tinta-sv)}
+.datos .centro{padding-block:58px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px}
+.dato{min-width:0}
+.dato .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--turquesa);font-weight:700}
+.dato .v{font-family:var(--display);font-size:21px;margin-top:6px;line-height:1.35}
+.dato .s{font-size:15px;color:var(--tinta-sv);margin-top:4px}
+.cierre{background:var(--tinta);color:#FDF8F4}
+.cierre .centro{padding-block:52px;display:grid;grid-template-columns:1.4fr 1fr;gap:36px;align-items:center}
+.cierre h2{font-size:clamp(24px,3.6vw,34px);color:#fff;letter-spacing:-.01em}
+.cierre p{color:#BBD0D3;margin:12px 0 0;max-width:48ch}
+.precio{background:rgba(255,255,255,.06);border:1px solid rgba(255,138,110,.4);
+        border-radius:18px;padding:26px;text-align:center}
+.precio .n{font-family:var(--display);font-size:52px;font-weight:700;color:#FF8A6E;line-height:1}
+.precio .t{font-size:15px;color:#BBD0D3;margin-top:8px}
+.precio .f{font-size:13px;color:#8FA8AD;margin-top:14px;border-top:1px solid rgba(255,255,255,.12);padding-top:12px}
+.pie{background:var(--arena)}
+.pie .centro{padding-block:26px;font-size:13px;color:var(--tinta-sv);
+             display:flex;flex-wrap:wrap;gap:6px 18px}
+.pie b{color:var(--coral)}
+@media (max-width:760px){
+  .hero .centro,.cierre .centro{grid-template-columns:1fr;gap:34px}
+  .retrato{max-width:300px;margin-inline:auto}
+  .menu{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="sora-top gutter">
+  <div class="centro">
+    <span class="sora-marca">SORA SYSTEMS</span>
+    <span class="sora-aviso">Propuesta de portada para Clínica Dental Teresa González. Esta página no es su web: es una idea de cómo podría quedar.</span>
+  </div>
+</header>
+
+<nav class="nav gutter">
+  <div class="centro">
+    <div class="logo">Clínica Dental Teresa <span>González</span></div>
+    <div class="menu"><span>Tratamientos</span><span>El equipo</span><span>Dónde estamos</span><span>Contacto</span></div>
+  </div>
+</nav>
+
+<section class="hero gutter">
+  <div class="centro">
+    <div>
+      <div class="eyebrow">Elda · odontología</div>
+      <h1>La dentista que te explica lo que te va a hacer</h1>
+      <p>Ortodoncia, implantes y odontopediatría en Elda. Presupuesto claro antes de empezar y sin tratamientos que no necesitas.</p>
+      <div class="botones">
+        <a class="btn btn-1" href="#">Pedir cita</a>
+        <a class="btn btn-2" href="#">Llamar a la clínica</a>
+      </div>
+    </div>
+    <div class="retrato"><small>Aquí iría una foto<br>de la clínica o del equipo</small></div>
+  </div>
+</section>
+
+<section class="serv gutter">
+  <div class="centro">
+    <h2>Tratamientos</h2>
+    <p>Los cinco que ya ofrecéis en vuestra web.</p>
+    <div class="rejilla">
+      <article class="tarjeta"><div class="num">01</div><h3>Ortodoncia e Invisalign</h3><p>Alineadores o brackets, con el plan a la vista.</p></article>
+      <article class="tarjeta"><div class="num">02</div><h3>Implantes</h3><p>Estudio, colocación y seguimiento del hueso.</p></article>
+      <article class="tarjeta"><div class="num">03</div><h3>Odontopediatría</h3><p>La primera visita de los niños, sin miedo.</p></article>
+      <article class="tarjeta"><div class="num">04</div><h3>Periodoncia</h3><p>Encías: el tratamiento que salva los dientes.</p></article>
+      <article class="tarjeta"><div class="num">05</div><h3>Estética dental</h3><p>Blanqueamiento y carillas, con criterio.</p></article></div>
+  </div>
+</section>
+
+<section class="datos gutter">
+  <div class="centro">
+    <div class="dato"><div class="k">Dónde</div><div class="v">Elda</div><div class="s">Clínica propia</div></div>
+    <div class="dato"><div class="k">Presupuesto</div><div class="v">Por escrito</div><div class="s">Antes de empezar cualquier tratamiento</div></div>
+    <div class="dato"><div class="k">Urgencias</div><div class="v">Hueco el mismo día</div><div class="s">Llámanos y te encajamos</div></div></div>
+</section>
+
+<section class="cierre gutter">
+  <div class="centro">
+    <div>
+      <h2>¿Os gusta cómo queda?</h2>
+      <p>Esto es una propuesta, hecha con vuestro nombre y vuestros servicios. Si os convence, la dejamos funcionando tal cual, con vuestras fotos y vuestros textos definitivos.</p>
+      <p style="margin-top:14px">Respondéis al correo y lo hablamos. Si no es el momento, decídmelo y no os vuelvo a escribir.</p>
+    </div>
+    <div class="precio">
+      <div class="n">200&nbsp;€</div>
+      <div class="t">Pago único. Sin cuotas.</div>
+      <div class="f">Oferta de octubre. Termina el 31.</div>
+    </div>
+  </div>
+</section>
+
+<footer class="pie gutter">
+  <div class="centro">
+    <span><b>Sora Systems</b> · sorasystems.es</span>
+    <span>Propuesta de diseño para Clínica Dental Teresa González · octubre de 2026</span>
+  </div>
+</footer>
+</body>
+</html>
