@@ -53,6 +53,47 @@ SECTORES = {
     "hotel":        ['nwr["tourism"="hotel"]'],
 }
 
+# ---------------------------------------------------------------------------
+# A quien NO se escribe, aunque pase todos los demas filtros.
+#
+# OpenStreetMap mezcla de todo. En la lista de CoWork venian centros de salud
+# publicos y cadenas nacionales. Ofrecerle a un Centro de Salud de la Seguridad
+# Social, o a Mapfre, que le renovamos la web por 200 EUR no es solo perder el
+# tiro: es quedar mal con el nombre de Sora delante. Y la sanidad publica
+# ademas pasaria el filtro de sociedad sin ser cliente posible.
+# ---------------------------------------------------------------------------
+PUBLICOS = (
+    ".gob.es", "juntadeandalucia.es", "gencat.cat", "sergas.es", "madrid.org",
+    "madrid.es", "sanidadmadrid.org", "gva.es", "murciasalud.es", "aragon.es",
+    "xunta.gal", "euskadi.eus", "jcyl.es", "jccm.es", "carm.es", "navarra.es",
+    "larioja.org", "caib.es", "gobiernodecanarias.org", "asturias.es",
+    "cantabria.es", "extremadura.es", "seg-social.es", "ayuntamiento",
+    "diputacion", ".sescam.", "sacyl", "ibsalut",
+)
+CADENAS = (
+    "sanitas", "vitaldent", "dentix", "mapfre", "axa", "quiron", "adeslas",
+    "asisa", "caser", "dkv", "generali", "allianz", "zurich", "santalucia",
+    "clinicabaviera", "vithas", "hla-", "ruberinternacional", "idcsalud",
+    "unidadmedica", "cignasalud", "imq.es",
+)
+
+
+def motivo_descarte(web, empresa):
+    u"""Descartes por quien es, antes de gastar una peticion en su web."""
+    d = urllib.parse.urlparse(web if web.startswith("http") else "https://" + web)
+    host = d.netloc.lower()
+    if not host:
+        return "web ilegible"
+    if any(p in host for p in PUBLICOS):
+        return "sector publico"
+    if any(c in host for c in CADENAS):
+        return "cadena nacional"
+    e = empresa.lower()
+    if "centro de salud" in e or "consultorio local" in e or e.startswith("cap "):
+        return "sector publico"
+    return None
+
+
 GENERICOS = ("info", "contacto", "hola", "administracion", "recepcion",
              "citas", "clinica", "despacho", "gestion", "oficina", "correo",
              "consultas", "atencion", "comercial", "secretaria")
