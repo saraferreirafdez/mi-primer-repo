@@ -8,3 +8,7 @@ informes/capturas/
 datos/redactados/
 datos/*.csv
 datos/placsp/
+
+# La lista de candidatos no va en este repositorio, que es publico.
+# Vive en sorasystems-web (privado), en .claude/datos/
+captacion/*.csv
